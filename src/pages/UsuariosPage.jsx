@@ -7,6 +7,7 @@ export default function UsuariosPage() {
   const [loading, setLoading] = useState(true)
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [error, setError] = useState('')
+  const [exito, setExito] = useState('')
   const [form, setForm] = useState({
     dni: '', nombre: '', apellidos: '', email: '',
     password: '', tipo: 'A.1', numCamas: 0, numPlazas: 0, numTrabajadores: 0
@@ -39,6 +40,8 @@ export default function UsuariosPage() {
     try {
       await api.post('/api/usuarios/registro', form)
       setMostrarFormulario(false)
+      setExito('Usuario creado correctamente')
+      setTimeout(() => setExito(''), 3000)
       setForm({
         dni: '', nombre: '', apellidos: '', email: '',
         password: '', tipo: 'A.1', numCamas: 0, numPlazas: 0, numTrabajadores: 0
@@ -52,6 +55,15 @@ export default function UsuariosPage() {
   const handleDesactivar = async (id) => {
     try {
       await api.delete(`/api/usuarios/${id}`)
+      cargarUsuarios()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const handleReactivar = async (id) => {
+    try {
+      await api.put(`/api/usuarios/${id}/reactivar`)
       cargarUsuarios()
     } catch (err) {
       console.error(err)
@@ -77,6 +89,12 @@ export default function UsuariosPage() {
             {mostrarFormulario ? 'Cancelar' : '+ Nuevo usuario'}
           </button>
         </div>
+
+        {exito && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+            {exito}
+          </div>
+        )}
 
         {mostrarFormulario && (
           <div className="bg-white rounded-2xl shadow p-6 mb-6">
@@ -167,13 +185,22 @@ export default function UsuariosPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {u.activo && u.rol !== 'ADMIN' && (
-                        <button
-                          onClick={() => handleDesactivar(u.id)}
-                          className="text-red-500 hover:text-red-700 text-xs font-medium"
-                        >
-                          Desactivar
-                        </button>
+                      {u.rol !== 'ADMIN' && (
+                        u.activo ? (
+                          <button
+                            onClick={() => handleDesactivar(u.id)}
+                            className="text-red-500 hover:text-red-700 text-xs font-medium"
+                          >
+                            Desactivar
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleReactivar(u.id)}
+                            className="text-green-500 hover:text-green-700 text-xs font-medium"
+                          >
+                            Reactivar
+                          </button>
+                        )
                       )}
                     </td>
                   </tr>
