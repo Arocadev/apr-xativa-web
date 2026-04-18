@@ -7,12 +7,13 @@ import RutaProtegida from './components/RutaProtegida'
 import VehiculosPage from './pages/VehiculosPage'
 import DerechosPage from './pages/DerechosPage'
 import PerfilPage from './pages/PerfilPage'
+import LandingPage from './pages/LandingPage'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<div>Landing page</div>} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/admin/login" element={<LoginPage />} />
         <Route path="/admin/dashboard" element={
           <RutaProtegida>
