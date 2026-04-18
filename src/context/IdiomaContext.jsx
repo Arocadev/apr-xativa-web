@@ -58,6 +58,14 @@ const traducciones = {
     cargando: 'Cargando...',
     usuarioCreado: 'Usuario creado correctamente',
     errorCrear: 'Error al crear el usuario',
+    miPerfil: 'Mi perfil',
+    datosAdmin: 'Datos del administrador',
+    cambiarPassword: 'Cambiar contraseña',
+    passwordActual: 'Contraseña actual',
+    passwordNueva: 'Nueva contraseña',
+    confirmarPassword: 'Confirmar contraseña',
+    passwordCambiada: 'Contraseña cambiada correctamente',
+    passwordNoCoinciden: 'Las contraseñas no coinciden',
   },
   ca: {
     panelAdmin: 'Panel Admin',
@@ -114,6 +122,14 @@ const traducciones = {
     cargando: 'Carregant...',
     usuarioCreado: 'Usuari creat correctament',
     errorCrear: 'Error al crear l\'usuari',
+    miPerfil: 'El meu perfil',
+    datosAdmin: 'Dades de l\'administrador',
+    cambiarPassword: 'Canviar contrasenya',
+    passwordActual: 'Contrasenya actual',
+    passwordNueva: 'Nova contrasenya',
+    confirmarPassword: 'Confirmar contrasenya',
+    passwordCambiada: 'Contrasenya canviada correctament',
+    passwordNoCoinciden: 'Les contrasenyes no coincideixen',
   }
 }
 

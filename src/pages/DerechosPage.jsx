@@ -29,7 +29,7 @@ export default function DerechosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <Navbar />
 
       <div className="p-8">

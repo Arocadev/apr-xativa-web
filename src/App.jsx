@@ -6,6 +6,7 @@ import UsuariosPage from './pages/UsuariosPage'
 import RutaProtegida from './components/RutaProtegida'
 import VehiculosPage from './pages/VehiculosPage'
 import DerechosPage from './pages/DerechosPage'
+import PerfilPage from './pages/PerfilPage'
 
 function App() {
   return (
@@ -36,6 +37,11 @@ function App() {
         <Route path="/admin/derechos" element={
           <RutaProtegida>
             <DerechosPage />
+          </RutaProtegida>
+        } />
+        <Route path="/admin/perfil" element={
+          <RutaProtegida>
+            <PerfilPage />
           </RutaProtegida>
         } />
       </Routes>
