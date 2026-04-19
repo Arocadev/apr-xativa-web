@@ -11,7 +11,7 @@ export default function VehiculosPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    api.get('/api/usuarios').then(res => setUsuarios(res.data))
+    api.get('/usuarios').then(res => setUsuarios(res.data))
   }, [])
 
   const buscarVehiculos = async (usuarioId) => {
@@ -19,7 +19,7 @@ export default function VehiculosPage() {
     if (!usuarioId) { setVehiculos([]); return }
     setLoading(true)
     try {
-      const res = await api.get(`/api/vehiculos?usuarioId=${usuarioId}`)
+      const res = await api.get(`/vehiculos?usuarioId=${usuarioId}`)
       setVehiculos(res.data)
     } catch (err) {
       console.error(err)

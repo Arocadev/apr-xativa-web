@@ -19,8 +19,8 @@ export default function SolicitudesPage() {
   const cargarSolicitudes = async () => {
     try {
       const [pendientes, todas] = await Promise.all([
-        api.get('/api/solicitudes/pendientes'),
-        api.get('/api/solicitudes/todas'),
+        api.get('/solicitudes/pendientes'),
+        api.get('/solicitudes/todas'),
       ])
       setSolicitudes(pendientes.data)
       setHistorial(todas.data.filter(s => s.estado !== 'PENDIENTE'))
@@ -33,7 +33,7 @@ export default function SolicitudesPage() {
 
   const aprobar = async (id) => {
     try {
-      await api.put(`/api/solicitudes/${id}/aprobar`)
+      await api.put(`/solicitudes/${id}/aprobar`)
       cargarSolicitudes()
     } catch (err) {
       console.error(err)
@@ -42,7 +42,7 @@ export default function SolicitudesPage() {
 
   const rechazar = async (id) => {
     try {
-      await api.put(`/api/solicitudes/${id}/rechazar`, { observaciones })
+      await api.put(`/solicitudes/${id}/rechazar`, { observaciones })
       setRechazandoId(null)
       setObservaciones('')
       cargarSolicitudes()

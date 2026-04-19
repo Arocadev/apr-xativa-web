@@ -19,9 +19,9 @@ export default function DashboardPage() {
     const cargarStats = async () => {
       try {
         const [solicitudes, usuarios, vehiculos] = await Promise.all([
-          api.get('/api/solicitudes/pendientes'),
-          api.get('/api/usuarios'),
-          api.get('/api/vehiculos/todos'),
+          api.get('/solicitudes/pendientes'),
+          api.get('/usuarios'),
+          api.get('/vehiculos/todos'),
         ])
         setStats({
           solicitudesPendientes: solicitudes.data.length,

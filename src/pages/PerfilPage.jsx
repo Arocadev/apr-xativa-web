@@ -24,7 +24,7 @@ export default function PerfilPage() {
       return
     }
     try {
-      await api.put('/api/usuarios/cambiar-password', {
+      await api.put('/usuarios/cambiar-password', {
         passwordActual: form.passwordActual,
         passwordNueva: form.passwordNueva
       })

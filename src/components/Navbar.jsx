@@ -15,7 +15,7 @@ export default function Navbar() {
   useEffect(() => {
     const cargar = async () => {
       try {
-        const res = await api.get('/api/solicitudes/pendientes')
+        const res = await api.get('/solicitudes/pendientes')
         setSolicitudesPendientes(res.data.length)
       } catch (err) {
         console.error(err)

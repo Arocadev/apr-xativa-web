@@ -11,7 +11,7 @@ export default function DerechosPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    api.get('/api/usuarios').then(res => setUsuarios(res.data))
+    api.get('/usuarios').then(res => setUsuarios(res.data))
   }, [])
 
   const buscarDerechos = async (usuarioId) => {
@@ -19,7 +19,7 @@ export default function DerechosPage() {
     if (!usuarioId) { setDerechos([]); return }
     setLoading(true)
     try {
-      const res = await api.get(`/api/derechos?usuarioId=${usuarioId}`)
+      const res = await api.get(`/derechos?usuarioId=${usuarioId}`)
       setDerechos(res.data)
     } catch (err) {
       console.error(err)

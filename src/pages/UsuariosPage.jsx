@@ -23,7 +23,7 @@ export default function UsuariosPage() {
 
   const cargarUsuarios = async () => {
     try {
-      const res = await api.get('/api/usuarios')
+      const res = await api.get('/usuarios')
       setUsuarios(res.data)
     } catch (err) {
       console.error(err)
@@ -47,7 +47,7 @@ export default function UsuariosPage() {
     e.preventDefault()
     setError('')
     try {
-      await api.post('/api/usuarios/registro', form)
+      await api.post('/usuarios/registro', form)
       setMostrarFormulario(false)
       setExito(t.usuarioCreado)
       setTimeout(() => setExito(''), 3000)
@@ -63,7 +63,7 @@ export default function UsuariosPage() {
 
   const handleDesactivar = async (id) => {
     try {
-      await api.delete(`/api/usuarios/${id}`)
+      await api.delete(`/usuarios/${id}`)
       setConfirmandoId(null)
       cargarUsuarios()
     } catch (err) {
@@ -73,7 +73,7 @@ export default function UsuariosPage() {
 
   const handleReactivar = async (id) => {
     try {
-      await api.put(`/api/usuarios/${id}/reactivar`)
+      await api.put(`/usuarios/${id}/reactivar`)
       cargarUsuarios()
     } catch (err) {
       console.error(err)

@@ -16,7 +16,7 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      const res = await api.post('/api/auth/login', { dni, password })
+      const res = await api.post('/auth/login', { dni, password })
       login(res.data.token, { email: res.data.email, rol: res.data.rol })
       navigate('/admin/dashboard')
     } catch (err) {
