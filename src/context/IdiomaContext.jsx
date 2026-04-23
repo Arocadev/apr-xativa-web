@@ -66,6 +66,10 @@ const traducciones = {
     confirmarPassword: 'Confirmar contraseña',
     passwordCambiada: 'Contraseña cambiada correctamente',
     passwordNoCoinciden: 'Las contraseñas no coinciden',
+    verDocumentos: 'Ver documentos',
+    sinDocumentos: 'Sin documentos adjuntos',
+    documentos: 'Documentos',
+    cerrar: 'Cerrar',
   },
   ca: {
     panelAdmin: 'Panel Admin',
@@ -130,6 +134,10 @@ const traducciones = {
     confirmarPassword: 'Confirmar contrasenya',
     passwordCambiada: 'Contrasenya canviada correctament',
     passwordNoCoinciden: 'Les contrasenyes no coincideixen',
+    verDocumentos: 'Veure documents',
+    sinDocumentos: 'Sense documents adjunts',
+    documentos: 'Documents',
+    cerrar: 'Tancar',
   }
 }
 

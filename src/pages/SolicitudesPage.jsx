@@ -11,6 +11,8 @@ export default function SolicitudesPage() {
   const [observaciones, setObservaciones] = useState('')
   const [rechazandoId, setRechazandoId] = useState(null)
   const [tab, setTab] = useState('pendientes')
+  const [documentosModal, setDocumentosModal] = useState(null)
+  const [documentos, setDocumentos] = useState([])
 
   useEffect(() => {
     cargarSolicitudes()
@@ -28,6 +30,16 @@ export default function SolicitudesPage() {
       console.error(err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const verDocumentos = async (usuarioId) => {
+    try {
+      const res = await api.get(`/documentos/usuario/${usuarioId}`)
+      setDocumentos(res.data)
+      setDocumentosModal(usuarioId)
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -54,6 +66,32 @@ export default function SolicitudesPage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <Navbar />
+
+      {documentosModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t.documentos}</h3>
+            {documentos.length === 0 ? (
+              <p className="text-gray-500 text-sm">{t.sinDocumentos}</p>
+            ) : (
+              <ul className="space-y-2">
+                {documentos.map((d) => (
+                  <li key={d.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-2">
+                    <p className="font-medium">{d.tipoDoc}</p>
+                    <p className="text-gray-400 text-xs">{d.ruta}</p>
+                    <p className="text-gray-400 text-xs">{new Date(d.subidoAt).toLocaleDateString('es-ES')}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button
+              onClick={() => setDocumentosModal(null)}
+              className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition">
+              {t.cerrar}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="p-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6">{t.solicitudes}</h2>
@@ -104,6 +142,7 @@ export default function SolicitudesPage() {
                     </div>
                   ) : (
                     <div className="flex gap-3 mt-4">
+                      <button onClick={() => verDocumentos(s.usuarioId)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.verDocumentos}</button>
                       <button onClick={() => aprobar(s.id)} className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.aprobar}</button>
                       <button onClick={() => setRechazandoId(s.id)} className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.rechazar}</button>
                     </div>
