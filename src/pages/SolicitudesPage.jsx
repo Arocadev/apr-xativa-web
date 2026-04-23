@@ -78,8 +78,15 @@ export default function SolicitudesPage() {
                 {documentos.map((d) => (
                   <li key={d.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-2">
                     <p className="font-medium">{d.tipoDoc}</p>
-                    <p className="text-gray-400 text-xs">{d.ruta}</p>
                     <p className="text-gray-400 text-xs">{new Date(d.subidoAt).toLocaleDateString('es-ES')}</p>
+                    <a
+                      href={`http://localhost:8080/api/documentos/ver/${d.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-700 text-xs font-medium mt-1 inline-block"
+                    >
+                      Ver documento 
+                    </a>
                   </li>
                 ))}
               </ul>
