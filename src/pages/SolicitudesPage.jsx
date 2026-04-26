@@ -43,6 +43,22 @@ export default function SolicitudesPage() {
     }
   }
 
+const verArchivo = async (documentoId) => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`http://localhost:8080/api/documentos/ver/${documentoId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const contentType = res.headers.get('content-type')
+      const blob = await res.blob()
+      const file = new Blob([blob], { type: contentType })
+      const url = URL.createObjectURL(file)
+      window.open(url, '_blank')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const aprobar = async (id) => {
     try {
       await api.put(`/solicitudes/${id}/aprobar`)
@@ -79,14 +95,12 @@ export default function SolicitudesPage() {
                   <li key={d.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-2">
                     <p className="font-medium">{d.tipoDoc}</p>
                     <p className="text-gray-400 text-xs">{new Date(d.subidoAt).toLocaleDateString('es-ES')}</p>
-                    <a
-                      href={`http://localhost:8080/api/documentos/ver/${d.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:text-blue-700 text-xs font-medium mt-1 inline-block"
+                    <button
+                      onClick={() => verArchivo(d.id)}
+                      className="text-blue-500 hover:text-blue-700 text-xs font-medium mt-1 inline-block cursor-pointer bg-transparent border-none p-0"
                     >
-                      Ver documento 
-                    </a>
+                      Ver documento
+                    </button>
                   </li>
                 ))}
               </ul>
