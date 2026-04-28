@@ -8,6 +8,7 @@ import VehiculosPage from './pages/VehiculosPage'
 import DerechosPage from './pages/DerechosPage'
 import PerfilPage from './pages/PerfilPage'
 import LandingPage from './pages/LandingPage'
+import SimuladorPage from './pages/SimuladorPage'
 
 function App() {
   return (
@@ -16,34 +17,25 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/admin/login" element={<LoginPage />} />
         <Route path="/admin/dashboard" element={
-          <RutaProtegida>
-            <DashboardPage />
-          </RutaProtegida>
+          <RutaProtegida><DashboardPage /></RutaProtegida>
         } />
         <Route path="/admin/solicitudes" element={
-          <RutaProtegida>
-            <SolicitudesPage />
-          </RutaProtegida>
+          <RutaProtegida><SolicitudesPage /></RutaProtegida>
         } />
         <Route path="/admin/usuarios" element={
-          <RutaProtegida>
-            <UsuariosPage />
-          </RutaProtegida>
+          <RutaProtegida><UsuariosPage /></RutaProtegida>
         } />
         <Route path="/admin/vehiculos" element={
-          <RutaProtegida>
-            <VehiculosPage />
-          </RutaProtegida>
+          <RutaProtegida><VehiculosPage /></RutaProtegida>
         } />
         <Route path="/admin/derechos" element={
-          <RutaProtegida>
-            <DerechosPage />
-          </RutaProtegida>
+          <RutaProtegida><DerechosPage /></RutaProtegida>
         } />
         <Route path="/admin/perfil" element={
-          <RutaProtegida>
-            <PerfilPage />
-          </RutaProtegida>
+          <RutaProtegida><PerfilPage /></RutaProtegida>
+        } />
+        <Route path="/admin/simulador" element={
+          <RutaProtegida><SimuladorPage /></RutaProtegida>
         } />
       </Routes>
     </BrowserRouter>

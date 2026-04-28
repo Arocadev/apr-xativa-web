@@ -33,7 +33,10 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow px-6 py-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold text-gray-800 dark:text-white cursor-pointer" onClick={() => navigate('/admin/dashboard')}>
+      <h1
+        className="text-xl font-bold text-gray-800 dark:text-white cursor-pointer"
+        onClick={() => navigate('/admin/dashboard')}
+      >
         APR Xàtiva — {t.panelAdmin}
       </h1>
       <div className="flex items-center gap-4">
@@ -48,8 +51,15 @@ export default function Navbar() {
             </span>
           )}
         </button>
+        <button
+          onClick={() => navigate('/admin/simulador')}
+          className="text-gray-600 hover:text-gray-800 text-xl"
+          title="Simulador de càmeres"
+        >
+          📷
+        </button>
         <button onClick={() => setOscuro(!oscuro)} className="text-gray-600 hover:text-gray-800 text-xl">
-            {oscuro ? '☀️' : '🌙'}
+          {oscuro ? '☀️' : '🌙'}
         </button>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
           <button onClick={() => setIdioma('es')}
@@ -62,10 +72,12 @@ export default function Navbar() {
           </button>
         </div>
         <button onClick={() => navigate('/admin/perfil')} className="text-gray-600 hover:text-gray-800 text-xl">
-            👤
+          👤
         </button>
-        <button onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition"
+        >
           {t.cerrarSesion}
         </button>
       </div>
