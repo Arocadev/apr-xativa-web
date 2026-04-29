@@ -43,7 +43,7 @@ export default function SolicitudesPage() {
     }
   }
 
-const verArchivo = async (documentoId) => {
+  const verArchivo = async (documentoId) => {
     try {
       const token = localStorage.getItem('token')
       const res = await fetch(`http://localhost:8080/api/documentos/ver/${documentoId}`, {
@@ -80,26 +80,31 @@ const verArchivo = async (documentoId) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
+    <div className="min-h-screen" style={{ backgroundColor: '#f8f7f5', fontFamily: "'Georgia', 'Times New Roman', serif" }}>
       <Navbar />
 
+      {/* Modal documentos */}
       {documentosModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t.documentos}</h3>
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-1 h-8 rounded" style={{ backgroundColor: '#C0392B' }} />
+              <h3 className="text-lg font-bold text-gray-800">{t.documentos}</h3>
+            </div>
             {documentos.length === 0 ? (
-              <p className="text-gray-500 text-sm">{t.sinDocumentos}</p>
+              <p className="text-gray-400 text-sm text-center py-4">{t.sinDocumentos}</p>
             ) : (
               <ul className="space-y-2">
                 {documentos.map((d) => (
-                  <li key={d.id} className="text-sm text-gray-700 bg-gray-50 rounded-lg px-4 py-2">
-                    <p className="font-medium">{d.tipoDoc}</p>
-                    <p className="text-gray-400 text-xs">{new Date(d.subidoAt).toLocaleDateString('es-ES')}</p>
+                  <li key={d.id} className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
+                    <p className="font-semibold text-gray-700 text-sm">{d.tipoDoc}</p>
+                    <p className="text-gray-400 text-xs mt-0.5">{new Date(d.subidoAt).toLocaleDateString('es-ES')}</p>
                     <button
                       onClick={() => verArchivo(d.id)}
-                      className="text-blue-500 hover:text-blue-700 text-xs font-medium mt-1 inline-block cursor-pointer bg-transparent border-none p-0"
+                      className="text-xs font-semibold mt-2 inline-block transition hover:opacity-70"
+                      style={{ color: '#C0392B', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
                     >
-                      Ver documento
+                      {t.verDocumentos} →
                     </button>
                   </li>
                 ))}
@@ -107,65 +112,122 @@ const verArchivo = async (documentoId) => {
             )}
             <button
               onClick={() => setDocumentosModal(null)}
-              className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg text-sm transition">
+              className="mt-5 w-full py-2.5 rounded-xl text-sm font-medium transition bg-gray-100 hover:bg-gray-200 text-gray-600"
+              style={{ fontFamily: 'sans-serif' }}>
               {t.cerrar}
             </button>
           </div>
         </div>
       )}
 
-      <div className="p-8">
-        <h2 className="text-2xl font-semibold text-gray-700 mb-6">{t.solicitudes}</h2>
+      <div className="max-w-5xl mx-auto px-8 py-10">
 
-        <div className="flex gap-4 mb-6">
-          <button onClick={() => setTab('pendientes')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === 'pendientes' ? 'bg-yellow-500 text-white' : 'bg-white text-gray-600 shadow'}`}>
+        {/* Cabecera */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
+          <h2 className="text-2xl font-bold text-gray-800">{t.solicitudes}</h2>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 mb-8">
+          <button
+            onClick={() => setTab('pendientes')}
+            className="px-5 py-2 rounded-lg text-sm font-medium transition"
+            style={{
+              fontFamily: 'sans-serif',
+              backgroundColor: tab === 'pendientes' ? '#C0392B' : 'white',
+              color: tab === 'pendientes' ? 'white' : '#6b7280',
+              boxShadow: tab === 'pendientes' ? 'none' : '0 1px 3px rgba(0,0,0,0.1)'
+            }}>
             {t.pendientes} ({solicitudes.length})
           </button>
-          <button onClick={() => setTab('historial')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === 'historial' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 shadow'}`}>
+          <button
+            onClick={() => setTab('historial')}
+            className="px-5 py-2 rounded-lg text-sm font-medium transition"
+            style={{
+              fontFamily: 'sans-serif',
+              backgroundColor: tab === 'historial' ? '#C0392B' : 'white',
+              color: tab === 'historial' ? 'white' : '#6b7280',
+              boxShadow: tab === 'historial' ? 'none' : '0 1px 3px rgba(0,0,0,0.1)'
+            }}>
             {t.historial} ({historial.length})
           </button>
         </div>
 
         {loading ? (
-          <p className="text-gray-500">{t.cargando}</p>
+          <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.cargando}</p>
         ) : tab === 'pendientes' ? (
           solicitudes.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow p-8 text-center text-gray-500">
-              {t.noHaySolicitudes}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-12 text-center">
+              <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.noHaySolicitudes}</p>
             </div>
           ) : (
             <div className="space-y-4">
               {solicitudes.map((s) => (
-                <div key={s.id} className="bg-white rounded-2xl shadow p-6">
-                  <div className="flex justify-between items-start">
+                <div key={s.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                  <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="font-semibold text-gray-800">Solicitud #{s.id}</p>
-                      <p className="text-sm text-gray-500 mt-1">Usuario ID: {s.usuarioId}</p>
-                      <p className="text-sm text-gray-500">{t.fecha}: {new Date(s.createdAt).toLocaleDateString('es-ES')}</p>
+                      <p className="font-bold text-gray-800">Sol·licitud #{s.id}</p>
+                      <p className="text-sm text-gray-400 mt-1" style={{ fontFamily: 'sans-serif' }}>
+                        {t.usuarios} ID: {s.usuarioId}
+                      </p>
+                      <p className="text-sm text-gray-400" style={{ fontFamily: 'sans-serif' }}>
+                        {t.fecha}: {new Date(s.createdAt).toLocaleDateString('es-ES')}
+                      </p>
                     </div>
-                    <span className="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">{s.estado}</span>
+                    <span className="bg-amber-50 text-amber-600 border border-amber-200 text-xs font-semibold px-3 py-1 rounded-full"
+                      style={{ fontFamily: 'sans-serif' }}>
+                      {s.estado}
+                    </span>
                   </div>
+
                   {rechazandoId === s.id ? (
-                    <div className="mt-4 space-y-3">
+                    <div className="space-y-3 pt-4 border-t border-gray-100">
                       <textarea
                         value={observaciones}
                         onChange={(e) => setObservaciones(e.target.value)}
                         placeholder={t.motivoRechazo}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+                        className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none transition"
+                        style={{ fontFamily: 'sans-serif' }}
+                        onFocus={e => e.target.style.borderColor = '#C0392B'}
+                        onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                         rows={3}
                       />
                       <div className="flex gap-3">
-                        <button onClick={() => rechazar(s.id)} className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.confirmarRechazo}</button>
-                        <button onClick={() => setRechazandoId(null)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm px-4 py-2 rounded-lg transition">{t.cancelar}</button>
+                        <button
+                          onClick={() => rechazar(s.id)}
+                          className="text-white text-sm px-5 py-2 rounded-lg transition hover:opacity-90"
+                          style={{ backgroundColor: '#C0392B', fontFamily: 'sans-serif' }}>
+                          {t.confirmarRechazo}
+                        </button>
+                        <button
+                          onClick={() => setRechazandoId(null)}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm px-5 py-2 rounded-lg transition"
+                          style={{ fontFamily: 'sans-serif' }}>
+                          {t.cancelar}
+                        </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex gap-3 mt-4">
-                      <button onClick={() => verDocumentos(s.usuarioId)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.verDocumentos}</button>
-                      <button onClick={() => aprobar(s.id)} className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.aprobar}</button>
-                      <button onClick={() => setRechazandoId(s.id)} className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">{t.rechazar}</button>
+                    <div className="flex gap-3 pt-4 border-t border-gray-100">
+                      <button
+                        onClick={() => verDocumentos(s.usuarioId)}
+                        className="text-sm px-4 py-2 rounded-lg border transition hover:opacity-80"
+                        style={{ borderColor: '#C0392B', color: '#C0392B', fontFamily: 'sans-serif', background: 'white' }}>
+                        {t.verDocumentos}
+                      </button>
+                      <button
+                        onClick={() => aprobar(s.id)}
+                        className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg transition"
+                        style={{ fontFamily: 'sans-serif' }}>
+                        {t.aprobar}
+                      </button>
+                      <button
+                        onClick={() => setRechazandoId(s.id)}
+                        className="text-white text-sm px-4 py-2 rounded-lg transition hover:opacity-90"
+                        style={{ backgroundColor: '#C0392B', fontFamily: 'sans-serif' }}>
+                        {t.rechazar}
+                      </button>
                     </div>
                   )}
                 </div>
@@ -174,35 +236,40 @@ const verArchivo = async (documentoId) => {
           )
         ) : (
           historial.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow p-8 text-center text-gray-500">
-              {t.noHayHistorial}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-12 text-center">
+              <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.noHayHistorial}</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600">
-                  <tr>
-                    <th className="px-6 py-3 text-left">ID</th>
-                    <th className="px-6 py-3 text-left">Usuario ID</th>
-                    <th className="px-6 py-3 text-left">{t.estado}</th>
-                    <th className="px-6 py-3 text-left">{t.fecha}</th>
-                    <th className="px-6 py-3 text-left">{t.fechaGestion}</th>
-                    <th className="px-6 py-3 text-left">{t.observaciones}</th>
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <table className="w-full text-sm" style={{ fontFamily: 'sans-serif' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#C0392B' }}>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">Usuari ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.estado}</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fecha}</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fechaGestion}</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.observaciones}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {historial.map((s) => (
-                    <tr key={s.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">#{s.id}</td>
-                      <td className="px-6 py-4">{s.usuarioId}</td>
+                <tbody className="divide-y divide-gray-50">
+                  {historial.map((s, i) => (
+                    <tr key={s.id} className="hover:bg-gray-50 transition" style={{ backgroundColor: i % 2 === 0 ? 'white' : '#fafafa' }}>
+                      <td className="px-6 py-4 font-medium text-gray-700">#{s.id}</td>
+                      <td className="px-6 py-4 text-gray-500">{s.usuarioId}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${s.estado === 'APROBADA' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          s.estado === 'APROBADA'
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : 'bg-red-50 border border-red-200'
+                        }`}
+                          style={s.estado !== 'APROBADA' ? { color: '#C0392B' } : {}}>
                           {s.estado}
                         </span>
                       </td>
-                      <td className="px-6 py-4">{new Date(s.createdAt).toLocaleDateString('es-ES')}</td>
-                      <td className="px-6 py-4">{s.gestionadaAt ? new Date(s.gestionadaAt).toLocaleDateString('es-ES') : '-'}</td>
-                      <td className="px-6 py-4">{s.observaciones || '-'}</td>
+                      <td className="px-6 py-4 text-gray-500">{new Date(s.createdAt).toLocaleDateString('es-ES')}</td>
+                      <td className="px-6 py-4 text-gray-500">{s.gestionadaAt ? new Date(s.gestionadaAt).toLocaleDateString('es-ES') : '-'}</td>
+                      <td className="px-6 py-4 text-gray-500">{s.observaciones || '-'}</td>
                     </tr>
                   ))}
                 </tbody>

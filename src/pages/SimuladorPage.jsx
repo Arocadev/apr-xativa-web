@@ -20,18 +20,14 @@ export default function SimuladorPage() {
     const hora = ahora()
     añadirLog(`[${hora}] Detectant matrícula...`, 'info')
     await new Promise(r => setTimeout(r, 300))
-
     try {
       const res = await api.get('/simulador/comprobar')
       const data = res.data
       const hora2 = ahora()
-
       añadirLog(`[${hora2}] Consultant backend...`, 'info')
       await new Promise(r => setTimeout(r, 200))
-
       const hora3 = ahora()
       setUltimoResultado(data)
-
       if (data.acceso) {
         añadirLog(`[${hora3}] ${data.matricula}  ✅ ACCÉS PERMÈS — ${data.tipoDerecho === 'PERMANENTE' ? 'Dret permanent' : 'Dret puntual'}`, 'ok')
         setStats(prev => ({ total: prev.total + 1, permitidos: prev.permitidos + 1, denegados: prev.denegados }))
@@ -39,9 +35,7 @@ export default function SimuladorPage() {
         añadirLog(`[${hora3}] ${data.matricula}  ❌ ACCÉS DENEGAT — ${data.motivo}`, 'error')
         setStats(prev => ({ total: prev.total + 1, permitidos: prev.permitidos, denegados: prev.denegados + 1 }))
       }
-
       añadirLog('', 'spacer')
-
     } catch (err) {
       añadirLog(`[${ahora()}] ⚠️ Error de connexió`, 'warn')
     }
@@ -80,110 +74,69 @@ export default function SimuladorPage() {
     return () => clearInterval(intervalRef.current)
   }, [])
 
-  const StatBadge = ({ label, value, color }) => (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '6px 20px',
-      borderRadius: '8px',
-      background: color === 'gray' ? '#f9fafb' : color === 'green' ? '#f0fdf4' : '#fef2f2',
-      border: `1px solid ${color === 'gray' ? '#e5e7eb' : color === 'green' ? '#bbf7d0' : '#fecaca'}`,
-    }}>
-      <span style={{
-        fontSize: '20px',
-        fontWeight: '700',
-        color: color === 'gray' ? '#111827' : color === 'green' ? '#16a34a' : '#dc2626',
-        lineHeight: 1.2
-      }}>{value}</span>
-      <span style={{
-        fontSize: '11px',
-        fontWeight: '500',
-        color: color === 'gray' ? '#9ca3af' : color === 'green' ? '#16a34a' : '#dc2626',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em'
-      }}>{label}</span>
-    </div>
-  )
-
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
+    <div className="min-h-screen" style={{ backgroundColor: '#f8f7f5', fontFamily: "'Georgia', 'Times New Roman', serif" }}>
       <Navbar />
-      <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
 
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <div className="max-w-6xl mx-auto px-8 py-10">
 
-          {/* Izquierda — título */}
-          <div>
-            <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#111827', margin: 0 }}
-              className="dark:text-white">
-              Simulador de càmeres APR
-            </h2>
-            <p style={{ fontSize: '13px', color: '#6b7280', margin: '2px 0 0 0' }}>
-              Zona 1.A — La Seu · Xàtiva
-            </p>
+        {/* Cabecera */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">Simulador de càmeres APR</h2>
+              <p className="text-sm text-gray-400 mt-0.5" style={{ fontFamily: 'sans-serif' }}>
+                Zona 1.A — La Seu · Xàtiva · {new Date().toLocaleDateString('ca-ES')}
+              </p>
+            </div>
           </div>
 
-          {/* Centro — stats */}
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <StatBadge label="Total" value={stats.total} color="gray" />
-            <StatBadge label="Permesos" value={stats.permitidos} color="green" />
-            <StatBadge label="Denegats" value={stats.denegados} color="red" />
+          {/* Stats */}
+          <div className="flex gap-3" style={{ fontFamily: 'sans-serif' }}>
+            <div className="bg-white border border-gray-100 rounded-xl px-5 py-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-gray-700">{stats.total}</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest">Total</p>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-xl px-5 py-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold text-green-600">{stats.permitidos}</p>
+              <p className="text-xs text-green-500 uppercase tracking-widest">Permesos</p>
+            </div>
+            <div className="bg-red-50 border border-red-200 rounded-xl px-5 py-3 text-center shadow-sm">
+              <p className="text-2xl font-semibold" style={{ color: '#C0392B' }}>{stats.denegados}</p>
+              <p className="text-xs uppercase tracking-widest" style={{ color: '#C0392B' }}>Denegats</p>
+            </div>
           </div>
 
-          {/* Derecha — botón + estado */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Botón + estado */}
+          <div className="flex items-center gap-3" style={{ fontFamily: 'sans-serif' }}>
             <button
               onClick={activo ? parar : iniciar}
-              style={{
-                padding: '7px 16px',
-                borderRadius: '7px',
-                fontSize: '13px',
-                fontWeight: '500',
-                border: 'none',
-                cursor: 'pointer',
-                background: activo ? '#ef4444' : '#22c55e',
-                color: 'white',
-                transition: 'opacity 0.15s'
-              }}
-              onMouseEnter={e => e.target.style.opacity = '0.85'}
-              onMouseLeave={e => e.target.style.opacity = '1'}
-            >
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition hover:opacity-90"
+              style={{ backgroundColor: activo ? '#C0392B' : '#16a34a' }}>
               {activo ? '⏹ Aturar' : '▶ Iniciar'}
             </button>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '7px 12px',
-              borderRadius: '7px',
-              fontSize: '12px',
-              fontWeight: '500',
-              border: `1px solid ${activo ? '#bbf7d0' : '#e5e7eb'}`,
-              background: activo ? '#f0fdf4' : '#f9fafb',
-              color: activo ? '#16a34a' : '#9ca3af'
-            }}>
-              <div style={{
-                width: '7px',
-                height: '7px',
-                borderRadius: '50%',
-                background: activo ? '#22c55e' : '#9ca3af',
-                animation: activo ? 'pulse 1.5s infinite' : 'none'
-              }} />
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium"
+              style={{
+                borderColor: activo ? '#bbf7d0' : '#e5e7eb',
+                backgroundColor: activo ? '#f0fdf4' : '#f9fafb',
+                color: activo ? '#16a34a' : '#9ca3af'
+              }}>
+              <div className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: activo ? '#22c55e' : '#9ca3af' }} />
               {activo ? 'En línia' : 'Aturat'}
             </div>
           </div>
         </div>
 
         {/* Layout dos columnas */}
-        <div style={{ display: 'flex', gap: '20px', height: 'calc(100vh - 220px)' }}>
+        <div style={{ display: 'flex', gap: '20px', height: 'calc(100vh - 280px)' }}>
 
           {/* Terminal */}
           <div style={{
             flex: 1,
             background: '#0d1117',
-            borderRadius: '10px',
+            borderRadius: '12px',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
@@ -239,101 +192,50 @@ export default function SimuladorPage() {
             </div>
           </div>
 
-          {/* Panel derecho */}
-          <div style={{ width: '280px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-
-            {/* Últim accés */}
-            <div style={{
-              flex: 1,
-              background: 'white',
-              borderRadius: '10px',
-              padding: '16px',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-            }} className="dark:bg-gray-900">
-              <p style={{ fontSize: '11px', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 12px 0' }}>
+          {/* Panel derecho — Últim accés */}
+          <div style={{ width: '280px' }}>
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 h-full">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4"
+                style={{ fontFamily: 'sans-serif' }}>
                 Últim accés
               </p>
               {ultimoResultado ? (
-                <div>
-                  <div style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    padding: '3px 10px',
-                    borderRadius: '5px',
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    marginBottom: '10px',
-                    background: ultimoResultado.acceso ? '#f0fdf4' : '#fef2f2',
-                    color: ultimoResultado.acceso ? '#16a34a' : '#dc2626',
-                    border: `1px solid ${ultimoResultado.acceso ? '#bbf7d0' : '#fecaca'}`
-                  }}>
+                <div style={{ fontFamily: 'sans-serif' }}>
+                  <div className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold mb-3 border"
+                    style={{
+                      backgroundColor: ultimoResultado.acceso ? '#f0fdf4' : '#fef2f2',
+                      color: ultimoResultado.acceso ? '#16a34a' : '#C0392B',
+                      borderColor: ultimoResultado.acceso ? '#bbf7d0' : '#fecaca'
+                    }}>
                     {ultimoResultado.acceso ? '✅ PERMÈS' : '❌ DENEGAT'}
                   </div>
-                  <p style={{
-                    fontSize: '26px',
-                    fontFamily: 'monospace',
-                    fontWeight: '700',
-                    color: '#111827',
-                    margin: '0 0 6px 0',
-                    letterSpacing: '0.05em'
-                  }} className="dark:text-white">
+                  <p className="font-mono font-bold text-gray-800 mb-1" style={{ fontSize: '26px', letterSpacing: '0.05em' }}>
                     {ultimoResultado.matricula}
                   </p>
-                  <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 12px 0' }}>
+                  <p className="text-sm text-gray-400 mb-3">
                     {ultimoResultado.motiu || ultimoResultado.motivo}
                   </p>
                   {ultimoResultado.acceso && (
-                    <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>Tipus</span>
-                        <span style={{ fontSize: '12px', color: '#374151', fontWeight: '500' }}>{ultimoResultado.tipoDerecho}</span>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>Acred.</span>
-                        <span style={{ fontSize: '12px', color: '#374151', fontWeight: '500' }}>{ultimoResultado.tipoAcred}</span>
-                      </div>
-                      {ultimoResultado.fechaFin && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ fontSize: '12px', color: '#9ca3af' }}>Fins</span>
-                          <span style={{ fontSize: '12px', color: '#374151', fontWeight: '500' }}>
-                            {ultimoResultado.fechaFin.split('-').reverse().join('/')}
-                          </span>
+                    <div className="border-t border-gray-100 pt-3 space-y-1.5">
+                      {[
+                        ['Tipus', ultimoResultado.tipoDerecho],
+                        ['Acred.', ultimoResultado.tipoAcred],
+                        ultimoResultado.fechaFin && ['Fins', ultimoResultado.fechaFin.split('-').reverse().join('/')]
+                      ].filter(Boolean).map(([k, v]) => (
+                        <div key={k} className="flex justify-between">
+                          <span className="text-xs text-gray-400">{k}</span>
+                          <span className="text-xs font-medium text-gray-700">{v}</span>
                         </div>
-                      )}
+                      ))}
                     </div>
                   )}
                 </div>
               ) : (
-                <p style={{ fontSize: '13px', color: '#9ca3af' }}>Cap accés registrat</p>
+                <p className="text-sm text-gray-400" style={{ fontFamily: 'sans-serif' }}>Cap accés registrat</p>
               )}
             </div>
-
-            {/* Info sistema */}
-            <div style={{
-              background: 'white',
-              borderRadius: '10px',
-              padding: '16px',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-            }} className="dark:bg-gray-900">
-              <p style={{ fontSize: '11px', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 10px 0' }}>
-                Sistema
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {[
-                  ['Zona', '1.A — La Seu'],
-                  ['Municipi', 'Xàtiva'],
-                  ['Interval', '2s'],
-                  ['Data', new Date().toLocaleDateString('ca-ES')]
-                ].map(([k, v]) => (
-                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '12px', color: '#9ca3af' }}>{k}</span>
-                    <span style={{ fontSize: '12px', color: '#374151', fontWeight: '500' }} className="dark:text-gray-300">{v}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
           </div>
+
         </div>
       </div>
     </div>

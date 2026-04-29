@@ -70,6 +70,11 @@ const traducciones = {
     sinDocumentos: 'Sin documentos adjuntos',
     documentos: 'Documentos',
     cerrar: 'Cerrar',
+    acceder: 'Acceder',
+    accesRapido: 'Acceso rápido',
+    aparencia: 'Apariencia',
+    modoOscuro: 'Modo oscuro',
+    modoOscuroDesc: 'Cambia el aspecto visual del panel',
   },
   ca: {
     panelAdmin: 'Panel Admin',
@@ -138,6 +143,11 @@ const traducciones = {
     sinDocumentos: 'Sense documents adjunts',
     documentos: 'Documents',
     cerrar: 'Tancar',
+    acceder: 'Accedir',
+    accesRapido: 'Accés ràpid',
+    aparencia: 'Aparença',
+    modoOscuro: 'Mode fosc',
+    modoOscuroDesc: "Canvia l'aspecte visual del panell",
   }
 }
 
