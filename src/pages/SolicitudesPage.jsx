@@ -13,6 +13,8 @@ export default function SolicitudesPage() {
   const [tab, setTab] = useState('pendientes')
   const [documentosModal, setDocumentosModal] = useState(null)
   const [documentos, setDocumentos] = useState([])
+  const [filtroDesde, setFiltroDesde] = useState('')
+  const [filtroHasta, setFiltroHasta] = useState('')
 
   useEffect(() => {
     cargarSolicitudes()
@@ -32,6 +34,19 @@ export default function SolicitudesPage() {
       setLoading(false)
     }
   }
+
+  const historialFiltrado = historial.filter(s => {
+    const fecha = new Date(s.createdAt)
+    const desde = filtroDesde ? new Date(filtroDesde) : null
+    const hasta = filtroHasta ? new Date(filtroHasta) : null
+    if (desde && fecha < desde) return false
+    if (hasta) {
+      const hastaFin = new Date(filtroHasta)
+      hastaFin.setHours(23, 59, 59)
+      if (fecha > hastaFin) return false
+    }
+    return true
+  })
 
   const verDocumentos = async (usuarioId) => {
     try {
@@ -78,6 +93,8 @@ export default function SolicitudesPage() {
       console.error(err)
     }
   }
+
+  const inputFecha = "border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none transition"
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8f7f5', fontFamily: "'Georgia', 'Times New Roman', serif" }}>
@@ -150,7 +167,7 @@ export default function SolicitudesPage() {
               color: tab === 'historial' ? 'white' : '#6b7280',
               boxShadow: tab === 'historial' ? 'none' : '0 1px 3px rgba(0,0,0,0.1)'
             }}>
-            {t.historial} ({historial.length})
+            {t.historial} ({historialFiltrado.length})
           </button>
         </div>
 
@@ -168,8 +185,8 @@ export default function SolicitudesPage() {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <p className="font-bold text-gray-800">Sol·licitud #{s.id}</p>
-                      <p className="text-sm text-gray-400 mt-1" style={{ fontFamily: 'sans-serif' }}>
-                        {t.usuarios} ID: {s.usuarioId}
+                      <p className="text-sm text-gray-400 mt-1 font-mono" style={{ fontFamily: 'monospace' }}>
+                        {s.usuarioDni}
                       </p>
                       <p className="text-sm text-gray-400" style={{ fontFamily: 'sans-serif' }}>
                         {t.fecha}: {new Date(s.createdAt).toLocaleDateString('es-ES')}
@@ -240,41 +257,79 @@ export default function SolicitudesPage() {
               <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.noHayHistorial}</p>
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-              <table className="w-full text-sm" style={{ fontFamily: 'sans-serif' }}>
-                <thead>
-                  <tr style={{ backgroundColor: '#C0392B' }}>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">Usuari ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.estado}</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fecha}</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fechaGestion}</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.observaciones}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {historial.map((s, i) => (
-                    <tr key={s.id} className="hover:bg-gray-50 transition" style={{ backgroundColor: i % 2 === 0 ? 'white' : '#fafafa' }}>
-                      <td className="px-6 py-4 font-medium text-gray-700">#{s.id}</td>
-                      <td className="px-6 py-4 text-gray-500">{s.usuarioId}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          s.estado === 'APROBADA'
-                            ? 'bg-green-50 text-green-700 border border-green-200'
-                            : 'bg-red-50 border border-red-200'
-                        }`}
-                          style={s.estado !== 'APROBADA' ? { color: '#C0392B' } : {}}>
-                          {s.estado}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-gray-500">{new Date(s.createdAt).toLocaleDateString('es-ES')}</td>
-                      <td className="px-6 py-4 text-gray-500">{s.gestionadaAt ? new Date(s.gestionadaAt).toLocaleDateString('es-ES') : '-'}</td>
-                      <td className="px-6 py-4 text-gray-500">{s.observaciones || '-'}</td>
+            <>
+              {/* Filtro fechas */}
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 mb-4 flex items-center gap-4"
+                style={{ fontFamily: 'sans-serif' }}>
+                <span className="text-xs text-gray-400 uppercase tracking-widest">{t.fecha}</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="date"
+                    value={filtroDesde}
+                    onChange={e => setFiltroDesde(e.target.value)}
+                    className={inputFecha}
+                    onFocus={e => e.target.style.borderColor = '#C0392B'}
+                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+                  />
+                  <span className="text-gray-400 text-sm">—</span>
+                  <input
+                    type="date"
+                    value={filtroHasta}
+                    onChange={e => setFiltroHasta(e.target.value)}
+                    className={inputFecha}
+                    onFocus={e => e.target.style.borderColor = '#C0392B'}
+                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+                  />
+                </div>
+                {(filtroDesde || filtroHasta) && (
+                  <button
+                    onClick={() => { setFiltroDesde(''); setFiltroHasta('') }}
+                    className="text-xs font-medium transition hover:opacity-70"
+                    style={{ color: '#C0392B' }}>
+                    {t.cancelar} ×
+                  </button>
+                )}
+                <span className="text-xs text-gray-400 ml-auto">
+                  {historialFiltrado.length} / {historial.length}
+                </span>
+              </div>
+
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                <table className="w-full text-sm" style={{ fontFamily: 'sans-serif' }}>
+                  <thead>
+                    <tr style={{ backgroundColor: '#C0392B' }}>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">DNI</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.estado}</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fecha}</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.fechaGestion}</th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{t.observaciones}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {historialFiltrado.map((s, i) => (
+                      <tr key={s.id} className="hover:bg-gray-50 transition" style={{ backgroundColor: i % 2 === 0 ? 'white' : '#fafafa' }}>
+                        <td className="px-6 py-4 font-medium text-gray-700">#{s.id}</td>
+                        <td className="px-6 py-4 font-mono text-xs text-gray-700">{s.usuarioDni}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            s.estado === 'APROBADA'
+                              ? 'bg-green-50 text-green-700 border border-green-200'
+                              : 'bg-red-50 border border-red-200'
+                          }`}
+                            style={s.estado !== 'APROBADA' ? { color: '#C0392B' } : {}}>
+                            {s.estado}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-500">{new Date(s.createdAt).toLocaleDateString('es-ES')}</td>
+                        <td className="px-6 py-4 text-gray-500">{s.gestionadaAt ? new Date(s.gestionadaAt).toLocaleDateString('es-ES') : '-'}</td>
+                        <td className="px-6 py-4 text-gray-500">{s.observaciones || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )
         )}
       </div>

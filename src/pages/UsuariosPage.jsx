@@ -45,7 +45,7 @@ export default function UsuariosPage() {
     e.preventDefault()
     setError('')
     try {
-      await api.post('/usuarios/registro', form)
+      await api.post('/usuarios/admin/registro', form)
       setMostrarFormulario(false)
       setExito(t.usuarioCreado)
       setTimeout(() => setExito(''), 3000)
