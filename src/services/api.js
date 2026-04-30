@@ -22,7 +22,25 @@ api.interceptors.response.use(
       localStorage.removeItem('token')
       localStorage.removeItem('usuario')
       window.location.href = '/admin/login'
+      return Promise.reject(error)
     }
+
+    if (error.response?.status === 403) {
+      console.warn('Accés denegat')
+      window.location.href = '/admin/dashboard'
+      return Promise.reject(error)
+    }
+
+    if (error.response?.status >= 500) {
+      console.error('Error del servidor:', error.response?.data)
+      return Promise.reject(error)
+    }
+
+    if (!error.response) {
+      console.error('Error de xarxa — el servidor no respon')
+      return Promise.reject(error)
+    }
+
     return Promise.reject(error)
   }
 )
