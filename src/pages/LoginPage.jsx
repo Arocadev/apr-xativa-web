@@ -20,8 +20,8 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { dni, password })
       const rol = res.data.rol
-      login(res.data.token, { email: res.data.email, rol })
       if (rol === 'ADMIN') {
+        login(res.data.token, { email: res.data.email, rol })
         navigate('/admin/dashboard')
       } else {
         setErrorKey('errorRol')
