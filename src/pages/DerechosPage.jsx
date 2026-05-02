@@ -9,10 +9,17 @@ export default function DerechosPage() {
   const [derechos, setDerechos] = useState([])
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState('')
   const [loading, setLoading] = useState(false)
+  const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
     api.get('/usuarios').then(res => setUsuarios(res.data))
   }, [])
+
+  const usuariosFiltrados = usuarios.filter(u =>
+    u.dni.toLowerCase().includes(busqueda.toLowerCase()) ||
+    u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    u.apellidos.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   const buscarDerechos = async (usuarioId) => {
     setUsuarioSeleccionado(usuarioId)
@@ -34,18 +41,33 @@ export default function DerechosPage() {
 
       <div className="max-w-6xl mx-auto px-8 py-10">
 
-        {/* Cabecera */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
           <h2 className="text-2xl font-bold text-gray-800">{t.derechos}</h2>
         </div>
 
-        {/* Selector usuario */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
           <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-2"
             style={{ fontFamily: 'sans-serif' }}>
             {t.seleccionaUsuario}
           </label>
+
+          <div className="relative w-full md:w-96 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder={t.buscar}
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none transition bg-white"
+              style={{ fontFamily: 'sans-serif' }}
+              onFocus={e => e.target.style.borderColor = '#C0392B'}
+              onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+            />
+          </div>
+
           <select
             value={usuarioSeleccionado}
             onChange={(e) => buscarDerechos(e.target.value)}
@@ -55,13 +77,12 @@ export default function DerechosPage() {
             onBlur={e => e.target.style.borderColor = '#e5e7eb'}
           >
             <option value="">{t.seleccionaUsuario}</option>
-            {usuarios.map(u => (
+            {usuariosFiltrados.map(u => (
               <option key={u.id} value={u.id}>{u.dni} — {u.nombre} {u.apellidos}</option>
             ))}
           </select>
         </div>
 
-        {/* Contenido */}
         {loading ? (
           <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.cargando}</p>
         ) : derechos.length > 0 ? (
