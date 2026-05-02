@@ -1,51 +1,33 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useIdioma } from '../context/IdiomaContext'
 import api from '../services/api'
-
-const textos = {
-  val: {
-    benvingut: 'Benvingut',
-    subtitulo: 'Inicia sessió per accedir al panel',
-    dni: 'DNI',
-    contrasenya: 'Contrasenya',
-    iniciar: 'Iniciar sessió',
-    carregant: 'Carregant...',
-    error: 'DNI o contrasenya incorrectes',
-    descripcio: "Panel d'administració del sistema de control d'accés a les Àrees de Prioritat Residencial de Xàtiva.",
-  },
-  es: {
-    benvingut: 'Bienvenido',
-    subtitulo: 'Inicia sesión para acceder al panel',
-    dni: 'DNI',
-    contrasenya: 'Contraseña',
-    iniciar: 'Iniciar sesión',
-    carregant: 'Cargando...',
-    error: 'DNI o contraseña incorrectos',
-    descripcio: 'Panel de administración del sistema de control de acceso a las Áreas de Prioridad Residencial de Xàtiva.',
-  }
-}
 
 export default function LoginPage() {
   const [dni, setDni] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [errorKey, setErrorKey] = useState('')
   const [loading, setLoading] = useState(false)
-  const [idioma, setIdioma] = useState('val')
   const { login } = useAuth()
   const navigate = useNavigate()
-  const t = textos[idioma]
+  const { idioma, setIdioma, t } = useIdioma()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
+    setErrorKey('')
     setLoading(true)
     try {
       const res = await api.post('/auth/login', { dni, password })
-      login(res.data.token, { email: res.data.email, rol: res.data.rol })
-      navigate('/admin/dashboard')
+      const rol = res.data.rol
+      login(res.data.token, { email: res.data.email, rol })
+      if (rol === 'ADMIN') {
+        navigate('/admin/dashboard')
+      } else {
+        setErrorKey('errorRol')
+      }
     } catch (err) {
-      setError(t.error)
+      setErrorKey('errorCredenciales')
     } finally {
       setLoading(false)
     }
@@ -80,11 +62,11 @@ export default function LoginPage() {
         {/* Selector idioma */}
         <div className="absolute top-6 right-6">
           <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: '#A93226' }}>
-            {['val', 'es'].map(l => (
-              <button key={l} onClick={() => setIdioma(l)}
+            {['ca', 'es'].map(l => (
+              <button key={l} onClick={() => { setIdioma(l); setErrorKey('') }}
                 className={`px-3 py-1 rounded-md text-xs font-medium transition ${idioma === l ? 'bg-white' : 'text-white/70 hover:text-white'}`}
                 style={idioma === l ? { color: '#C0392B' } : {}}>
-                {l.toUpperCase()}
+                {l === 'ca' ? 'VAL' : 'ES'}
               </button>
             ))}
           </div>
@@ -115,7 +97,6 @@ export default function LoginPage() {
                 type="text"
                 value={dni}
                 onChange={(e) => setDni(e.target.value.toUpperCase())}
-                placeholder=""
                 className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none transition"
                 style={{ fontFamily: 'sans-serif' }}
                 onFocus={e => e.target.style.borderColor = '#C0392B'}
@@ -126,13 +107,12 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5" style={{ fontFamily: 'sans-serif' }}>
-                {t.contrasenya}
+                {t.contrasena}
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=""
                 className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none transition"
                 style={{ fontFamily: 'sans-serif' }}
                 onFocus={e => e.target.style.borderColor = '#C0392B'}
@@ -141,9 +121,9 @@ export default function LoginPage() {
               />
             </div>
 
-            {error && (
+            {errorKey && (
               <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-                <p className="text-red-600 text-sm" style={{ fontFamily: 'sans-serif' }}>{error}</p>
+                <p className="text-red-600 text-sm" style={{ fontFamily: 'sans-serif' }}>{t[errorKey]}</p>
               </div>
             )}
 

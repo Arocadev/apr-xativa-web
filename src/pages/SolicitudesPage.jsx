@@ -51,7 +51,9 @@ export default function SolicitudesPage() {
   const verDocumentos = async (usuarioId) => {
     try {
       const res = await api.get(`/documentos/usuario/${usuarioId}`)
-      setDocumentos(res.data)
+      const todos = res.data
+      const ultimo = todos.length > 0 ? [todos[todos.length - 1]] : []
+      setDocumentos(ultimo)
       setDocumentosModal(usuarioId)
     } catch (err) {
       console.error(err)
@@ -64,11 +66,27 @@ export default function SolicitudesPage() {
       const res = await fetch(`http://localhost:8080/api/documentos/ver/${documentoId}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      const contentType = res.headers.get('content-type')
+      const contentType = res.headers.get('content-type') || 'application/octet-stream'
+      const contentDisposition = res.headers.get('content-disposition')
+
+      let nombreArchivo = `documento_${documentoId}`
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+        if (match) nombreArchivo = match[1].replace(/['"]/g, '')
+      } else {
+        if (contentType.includes('pdf')) nombreArchivo += '.pdf'
+        else if (contentType.includes('jpeg') || contentType.includes('jpg')) nombreArchivo += '.jpg'
+        else if (contentType.includes('png')) nombreArchivo += '.png'
+      }
+
       const blob = await res.blob()
       const file = new Blob([blob], { type: contentType })
       const url = URL.createObjectURL(file)
-      window.open(url, '_blank')
+      const a = document.createElement('a')
+      a.href = url
+      a.download = nombreArchivo
+      a.click()
+      URL.revokeObjectURL(url)
     } catch (err) {
       console.error(err)
     }
@@ -100,7 +118,6 @@ export default function SolicitudesPage() {
     <div className="min-h-screen" style={{ backgroundColor: '#f8f7f5', fontFamily: "'Georgia', 'Times New Roman', serif" }}>
       <Navbar />
 
-      {/* Modal documentos */}
       {documentosModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
@@ -138,14 +155,11 @@ export default function SolicitudesPage() {
       )}
 
       <div className="max-w-5xl mx-auto px-8 py-10">
-
-        {/* Cabecera */}
         <div className="flex items-center gap-3 mb-8">
           <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
           <h2 className="text-2xl font-bold text-gray-800">{t.solicitudes}</h2>
         </div>
 
-        {/* Tabs */}
         <div className="flex gap-2 mb-8">
           <button
             onClick={() => setTab('pendientes')}
@@ -258,7 +272,6 @@ export default function SolicitudesPage() {
             </div>
           ) : (
             <>
-              {/* Filtro fechas */}
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-5 py-4 mb-4 flex items-center gap-4"
                 style={{ fontFamily: 'sans-serif' }}>
                 <span className="text-xs text-gray-400 uppercase tracking-widest">{t.fecha}</span>
