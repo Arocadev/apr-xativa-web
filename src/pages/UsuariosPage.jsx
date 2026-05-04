@@ -3,12 +3,24 @@ import { useIdioma } from '../context/IdiomaContext'
 import api from '../services/api'
 import Navbar from '../components/Navbar'
 
+const EyeIcon = ({ visible }) => visible ? (
+  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+  </svg>
+) : (
+  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+)
+
 export default function UsuariosPage() {
   const { t } = useIdioma()
   const [usuarios, setUsuarios] = useState([])
   const [loading, setLoading] = useState(true)
   const [confirmandoId, setConfirmandoId] = useState(null)
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [mostrarPasswordForm, setMostrarPasswordForm] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
   const [busqueda, setBusqueda] = useState('')
@@ -114,7 +126,6 @@ export default function UsuariosPage() {
                 { label: t.nombre, name: 'nombre', type: 'text' },
                 { label: t.apellidos, name: 'apellidos', type: 'text' },
                 { label: t.email, name: 'email', type: 'email' },
-                { label: t.contrasena, name: 'password', type: 'password' },
               ].map(({ label, name, type }) => (
                 <div key={name}>
                   <label className="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">{label}</label>
@@ -127,6 +138,31 @@ export default function UsuariosPage() {
                   />
                 </div>
               ))}
+
+              {/* Campo contraseña con ojo */}
+              <div>
+                <label className="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">{t.contrasena}</label>
+                <div className="relative">
+                  <input
+                    name="password"
+                    type={mostrarPasswordForm ? 'text' : 'password'}
+                    value={form.password}
+                    onChange={handleChange}
+                    className={inputClass + ' pr-11'}
+                    onFocus={e => e.target.style.borderColor = '#C0392B'}
+                    onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setMostrarPasswordForm(!mostrarPasswordForm)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  >
+                    <EyeIcon visible={mostrarPasswordForm} />
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">{t.tipo}</label>
                 <select name="tipo" value={form.tipo} onChange={handleChange}
@@ -136,6 +172,7 @@ export default function UsuariosPage() {
                   {['A.1','A.2','A.3','B','C','D','E','F','G','H.1','H.2'].map(o => <option key={o}>{o}</option>)}
                 </select>
               </div>
+
               {error && <p className="text-sm col-span-2" style={{ color: '#C0392B' }}>{error}</p>}
               <div className="col-span-2 flex gap-3 pt-2 border-t border-gray-100">
                 <button type="submit"
