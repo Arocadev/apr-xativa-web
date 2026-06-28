@@ -1,15 +1,22 @@
-import { useState } from 'react'
+//import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useIdioma } from '../context/IdiomaContext'
-import api from '../services/api'
+//import api from '../services/api'
 import Navbar from '../components/Navbar'
 
 export default function PerfilPage() {
   const { usuario } = useAuth()
   const { t } = useIdioma()
-  const [form, setForm] = useState({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
+    /*
+  const [form, setForm] = useState({
+    passwordActual: '',
+    passwordNueva: '',
+    passwordConfirm: ''
+  })
+
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
+
   const [mostrarPasswords, setMostrarPasswords] = useState({
     passwordActual: false,
     passwordNueva: false,
@@ -35,13 +42,19 @@ export default function PerfilPage() {
       })
       setExito(t.passwordCambiada)
       setTimeout(() => setExito(''), 3000)
-      setForm({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
+      setForm({
+        passwordActual: '',
+        passwordNueva: '',
+        passwordConfirm: ''
+      })
     } catch (err) {
       setError(err.response?.data?.mensaje || 'Error al cambiar la contrasenya')
     }
   }
 
-  const inputClass = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none transition"
+  const inputClass =
+    'w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none transition'
+
 
   const EyeIcon = ({ visible }) => visible ? (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,6 +66,7 @@ export default function PerfilPage() {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
     </svg>
   )
+    */
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8f7f5', fontFamily: "'Georgia', 'Times New Roman', serif" }}>
@@ -90,6 +104,17 @@ export default function PerfilPage() {
             <div className="w-1 h-7 rounded" style={{ backgroundColor: '#C0392B' }} />
             <h3 className="font-bold text-gray-800">{t.cambiarPassword}</h3>
           </div>
+            <div className="flex flex-col items-center justify-center p-8 text-center">
+                <div className="text-4xl mb-4">🔒</div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    Cambio de contraseña desactivado
+                </h3>
+                <p className="text-sm text-gray-500">
+                    Per motivos de seguridad, el cambio de contraseña
+                    no está disponible en este entorno demo
+                </p>
+            </div>
+            {/*
           <form onSubmit={handleCambiarPassword} className="space-y-4" style={{ fontFamily: 'sans-serif' }}>
             {[
               { label: t.passwordActual, name: 'passwordActual' },
@@ -137,6 +162,7 @@ export default function PerfilPage() {
               {t.cambiarPassword}
             </button>
           </form>
+          */}
         </div>
 
       </div>
