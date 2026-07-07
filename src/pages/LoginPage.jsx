@@ -22,7 +22,7 @@ export default function LoginPage() {
       const res = await api.post('/auth/login', { dni, password })
       const rol = res.data.rol
       if (rol === 'ADMIN') {
-        login(res.data.token, { email: res.data.email, rol })
+        login(res.data.token, res.data.refreshToken, { email: res.data.email, rol })
         navigate('/admin/dashboard')
       } else {
         setErrorKey('errorRol')
@@ -37,7 +37,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
 
-      {/* Mitad izquierda — roja */}
       <div className="hidden md:flex flex-col justify-center items-center w-1/2 px-16 text-white relative overflow-hidden"
         style={{ backgroundColor: '#C0392B' }}>
         <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
@@ -57,10 +56,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Mitad derecha — blanca */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 px-8 bg-white relative">
 
-        {/* Selector idioma */}
         <div className="absolute top-6 right-6">
           <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: '#A93226' }}>
             {['ca', 'es'].map(l => (
@@ -75,7 +72,6 @@ export default function LoginPage() {
 
         <div className="w-full max-w-sm">
 
-          {/* Logo mobile */}
           <div className="md:hidden text-center mb-10">
             <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl font-bold mx-auto mb-4"
               style={{ backgroundColor: '#C0392B' }}>
@@ -161,7 +157,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-
     </div>
   )
 }

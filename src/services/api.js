@@ -8,7 +8,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  if (!config.url.includes('/auth/login')) {
+  if (!config.url.includes('/auth/login') && !config.url.includes('/auth/refresh')) {
     const token = localStorage.getItem('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -17,16 +17,75 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+let refrescando = false
+let colaEspera = []
+
+const procesarCola = (error, token = null) => {
+  colaEspera.forEach(({ resolve, reject }) => {
+    if (error) reject(error)
+    else resolve(token)
+  })
+  colaEspera = []
+}
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('usuario')
-      if (!window.location.pathname.includes('/admin/login')) {
-        window.location.href = '/admin/login'
+  async (error) => {
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry &&
+        !originalRequest.url.includes('/auth/login') &&
+        !originalRequest.url.includes('/auth/refresh')) {
+
+      if (refrescando) {
+        return new Promise((resolve, reject) => {
+          colaEspera.push({ resolve, reject })
+        }).then(token => {
+          originalRequest.headers.Authorization = `Bearer ${token}`
+          return api(originalRequest)
+        }).catch(err => Promise.reject(err))
       }
-      return Promise.reject(error)
+
+      originalRequest._retry = true
+      refrescando = true
+
+      const refreshToken = localStorage.getItem('refreshToken')
+
+      if (!refreshToken) {
+        refrescando = false
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('usuario')
+        window.location.href = '/admin/login'
+        return Promise.reject(error)
+      }
+
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:8080/api'}/auth/refresh`,
+          { refreshToken }
+        )
+        const nuevoToken = res.data.token
+        const nuevoRefresh = res.data.refreshToken
+
+        localStorage.setItem('token', nuevoToken)
+        localStorage.setItem('refreshToken', nuevoRefresh)
+
+        procesarCola(null, nuevoToken)
+        refrescando = false
+
+        originalRequest.headers.Authorization = `Bearer ${nuevoToken}`
+        return api(originalRequest)
+
+      } catch (refreshError) {
+        procesarCola(refreshError, null)
+        refrescando = false
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+        localStorage.removeItem('usuario')
+        window.location.href = '/admin/login'
+        return Promise.reject(refreshError)
+      }
     }
 
     if (error.response?.status === 403) {

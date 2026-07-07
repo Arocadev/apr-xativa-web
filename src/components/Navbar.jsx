@@ -25,16 +25,21 @@ export default function Navbar() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleLogout = () => {
-    logout()
-    navigate('/admin/login')
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout')
+    } catch (err) {
+      console.error('Error al fer logout:', err)
+    } finally {
+      logout()
+      navigate('/admin/login')
+    }
   }
 
   return (
     <nav className="bg-white border-b-4 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm"
       style={{ borderColor: '#C0392B' }}>
 
-      {/* Logo */}
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/admin/dashboard')}>
         <div className="w-9 h-9 rounded flex items-center justify-center text-white text-xs font-bold"
           style={{ backgroundColor: '#C0392B' }}>
@@ -46,10 +51,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Derecha */}
       <div className="flex items-center gap-3">
 
-        {/* Notificaciones */}
         <button
           onClick={() => navigate('/admin/solicitudes')}
           className="relative p-2 rounded-lg hover:bg-gray-100 transition"
@@ -66,7 +69,6 @@ export default function Navbar() {
           )}
         </button>
 
-        {/* Selector idioma */}
         <div className="flex gap-1 rounded-lg p-1" style={{ backgroundColor: '#A93226' }}>
           {['es', 'ca'].map(l => (
             <button key={l} onClick={() => setIdioma(l)}
@@ -77,12 +79,10 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Menú opciones */}
         <div className="relative">
           <button
             onClick={() => setMenuAbierto(!menuAbierto)}
             className="p-2 rounded-lg hover:bg-gray-100 transition"
-            title="Opcions"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -93,7 +93,6 @@ export default function Navbar() {
           {menuAbierto && (
             <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
 
-              {/* Perfil */}
               <button
                 onClick={() => { navigate('/admin/perfil'); setMenuAbierto(false) }}
                 className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition"
@@ -104,7 +103,6 @@ export default function Navbar() {
                 {t.miPerfil}
               </button>
 
-              {/* Simulador */}
               <button
                 onClick={() => { navigate('/admin/simulador'); setMenuAbierto(false) }}
                 className="w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition"
@@ -117,7 +115,6 @@ export default function Navbar() {
 
               <div className="border-t border-gray-100 my-1" />
 
-              {/* Cerrar sesión */}
               <button
                 onClick={() => { handleLogout(); setMenuAbierto(false) }}
                 className="w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 transition hover:bg-red-50"
