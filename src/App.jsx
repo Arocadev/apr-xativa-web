@@ -9,6 +9,7 @@ import DerechosPage from './pages/DerechosPage'
 import PerfilPage from './pages/PerfilPage'
 import LandingPage from './pages/LandingPage'
 import SimuladorPage from './pages/SimuladorPage'
+import AuditoriaPage from './pages/AuditoriaPage'
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
         } />
         <Route path="/admin/simulador" element={
           <RutaProtegida><SimuladorPage /></RutaProtegida>
+        } />
+        <Route path="/admin/auditoria" element={
+          <RutaProtegida><AuditoriaPage /></RutaProtegida>
         } />
       </Routes>
     </BrowserRouter>

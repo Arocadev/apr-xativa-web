@@ -125,6 +125,20 @@ export default function DashboardPage() {
       color: '#0891b2',
       bgHover: '#ecfeff',
     },
+    {
+      key: 'auditoria',
+      ruta: '/admin/auditoria',
+      titulo: t.auditoria,
+      descripcion: t.consultarAuditoria,
+      badge: null,
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+      color: '#db2777',
+      bgHover: '#fdf2f8',
+    },
   ]
 
   return (
@@ -188,7 +202,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {loading ? (
-            [...Array(5)].map((_, i) => <SkeletonCard key={i} />)
+            [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
           ) : (
             secciones.map((s) => (
               <button

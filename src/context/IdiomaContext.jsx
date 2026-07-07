@@ -4,7 +4,6 @@ const IdiomaContext = createContext(null)
 
 const traducciones = {
   es: {
-    // Login
     benvingut: 'Bienvenido',
     subtitulo: 'Inicia sesión para acceder al panel',
     iniciar: 'Iniciar sesión',
@@ -12,7 +11,6 @@ const traducciones = {
     errorCredenciales: 'DNI o contraseña incorrectos',
     errorRol: 'Acceso no autorizado',
     descripcio: 'Panel de administración del sistema de control de acceso a las Áreas de Prioridad Residencial de Xàtiva.',
-    // Panel
     panelAdmin: 'Panel Admin',
     cerrarSesion: 'Cerrar sesión',
     resumenGeneral: 'Resumen general',
@@ -29,6 +27,8 @@ const traducciones = {
     consultarDerechos: 'Consulta los derechos de acceso activos',
     simulador: 'Simulador',
     gestionarSimulador: 'Simula el tráfico de vehículos en las cámaras APR',
+    auditoria: 'Auditoría',
+    consultarAuditoria: 'Registro de acciones del sistema',
     pendientes: 'Pendientes',
     historial: 'Historial',
     noHaySolicitudes: 'No hay solicitudes pendientes',
@@ -86,9 +86,13 @@ const traducciones = {
     aparencia: 'Apariencia',
     modoOscuro: 'Modo oscuro',
     modoOscuroDesc: 'Cambia el aspecto visual del panel',
+    evento: 'Evento',
+    realizadoPor: 'Realizado por',
+    noHayAuditoria: 'No hay registros de auditoría',
+    todosLosEventos: 'Todos los eventos',
+    detall: 'Detalle',
   },
   ca: {
-    // Login
     benvingut: 'Benvingut',
     subtitulo: 'Inicia sessió per accedir al panel',
     iniciar: 'Iniciar sessió',
@@ -96,7 +100,6 @@ const traducciones = {
     errorCredenciales: 'DNI o contrasenya incorrectes',
     errorRol: 'Accés no autoritzat',
     descripcio: "Panel d'administració del sistema de control d'accés a les Àrees de Prioritat Residencial de Xàtiva.",
-    // Panel
     panelAdmin: 'Panel Admin',
     cerrarSesion: 'Tancar sessió',
     resumenGeneral: 'Resum general',
@@ -113,6 +116,8 @@ const traducciones = {
     consultarDerechos: "Consulta els drets d'accés actius",
     simulador: 'Simulador',
     gestionarSimulador: 'Simula el trànsit de vehicles a les càmeres APR',
+    auditoria: 'Auditoria',
+    consultarAuditoria: 'Registre d\'accions del sistema',
     pendientes: 'Pendents',
     historial: 'Historial',
     noHaySolicitudes: 'No hi ha sol·licituds pendents',
@@ -170,6 +175,11 @@ const traducciones = {
     aparencia: 'Aparença',
     modoOscuro: 'Mode fosc',
     modoOscuroDesc: "Canvia l'aspecte visual del panell",
+    evento: 'Esdeveniment',
+    realizadoPor: 'Realitzat per',
+    noHayAuditoria: 'No hi ha registres d\'auditoria',
+    todosLosEventos: 'Tots els esdeveniments',
+    detall: 'Detall',
   }
 }
 
