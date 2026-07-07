@@ -14,16 +14,29 @@ const EyeIcon = ({ visible }) => visible ? (
   </svg>
 )
 
+const SkeletonFila = () => (
+  <tr className="animate-pulse">
+    {[...Array(7)].map((_, i) => (
+      <td key={i} className="px-6 py-4">
+        <div className="h-4 bg-gray-200 rounded w-full" />
+      </td>
+    ))}
+  </tr>
+)
+
 export default function UsuariosPage() {
   const { t } = useIdioma()
   const [usuarios, setUsuarios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [errorGlobal, setErrorGlobal] = useState('')
   const [confirmandoId, setConfirmandoId] = useState(null)
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [mostrarPasswordForm, setMostrarPasswordForm] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
   const [busqueda, setBusqueda] = useState('')
+  const [paginaActual, setPaginaActual] = useState(0)
+  const usuariosPorPagina = 10
   const [form, setForm] = useState({
     dni: '', nombre: '', apellidos: '', email: '',
     password: '', tipo: 'A.1', numCamas: 0, numPlazas: 0, numTrabajadores: 0
@@ -32,11 +45,13 @@ export default function UsuariosPage() {
   useEffect(() => { cargarUsuarios() }, [])
 
   const cargarUsuarios = async () => {
+    setLoading(true)
+    setErrorGlobal('')
     try {
       const res = await api.get('/usuarios')
       setUsuarios(res.data)
     } catch (err) {
-      console.error(err)
+      setErrorGlobal(err.response?.data?.mensaje || 'Error al carregar els usuaris')
     } finally {
       setLoading(false)
     }
@@ -47,6 +62,17 @@ export default function UsuariosPage() {
     u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
     u.apellidos.toLowerCase().includes(busqueda.toLowerCase())
   )
+
+  const totalPagines = Math.ceil(usuariosFiltrados.length / usuariosPorPagina)
+  const usuariosPagina = usuariosFiltrados.slice(
+    paginaActual * usuariosPorPagina,
+    (paginaActual + 1) * usuariosPorPagina
+  )
+
+  const handleBusqueda = (e) => {
+    setBusqueda(e.target.value)
+    setPaginaActual(0)
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -73,14 +99,20 @@ export default function UsuariosPage() {
       await api.delete(`/usuarios/${id}`)
       setConfirmandoId(null)
       cargarUsuarios()
-    } catch (err) { console.error(err) }
+    } catch (err) {
+      setErrorGlobal(err.response?.data?.mensaje || 'Error al desactivar')
+      setTimeout(() => setErrorGlobal(''), 3000)
+    }
   }
 
   const handleReactivar = async (id) => {
     try {
       await api.put(`/usuarios/${id}/reactivar`)
       cargarUsuarios()
-    } catch (err) { console.error(err) }
+    } catch (err) {
+      setErrorGlobal(err.response?.data?.mensaje || 'Error al reactivar')
+      setTimeout(() => setErrorGlobal(''), 3000)
+    }
   }
 
   const inputClass = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none transition"
@@ -91,7 +123,6 @@ export default function UsuariosPage() {
 
       <div className="max-w-6xl mx-auto px-8 py-10">
 
-        {/* Cabecera */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-3">
             <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
@@ -105,7 +136,16 @@ export default function UsuariosPage() {
           </button>
         </div>
 
-        {/* Éxito */}
+        {errorGlobal && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-5 text-sm flex items-center gap-2"
+            style={{ fontFamily: 'sans-serif', color: '#C0392B' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {errorGlobal}
+          </div>
+        )}
+
         {exito && (
           <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-5 text-sm"
             style={{ fontFamily: 'sans-serif' }}>
@@ -113,7 +153,6 @@ export default function UsuariosPage() {
           </div>
         )}
 
-        {/* Formulario nuevo usuario */}
         {mostrarFormulario && (
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
             <div className="flex items-center gap-3 mb-5">
@@ -139,7 +178,6 @@ export default function UsuariosPage() {
                 </div>
               ))}
 
-              {/* Campo contraseña con ojo */}
               <div>
                 <label className="block text-xs font-medium text-gray-500 uppercase tracking-widest mb-1.5">{t.contrasena}</label>
                 <div className="relative">
@@ -189,7 +227,6 @@ export default function UsuariosPage() {
           </div>
         )}
 
-        {/* Buscador */}
         <div className="mb-5">
           <div className="relative w-full md:w-96">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,7 +236,7 @@ export default function UsuariosPage() {
               type="text"
               placeholder={t.buscar}
               value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
+              onChange={handleBusqueda}
               className="w-full border border-gray-200 rounded-lg pl-9 pr-4 py-2.5 text-sm focus:outline-none transition bg-white"
               style={{ fontFamily: 'sans-serif' }}
               onFocus={e => e.target.style.borderColor = '#C0392B'}
@@ -208,21 +245,26 @@ export default function UsuariosPage() {
           </div>
         </div>
 
-        {/* Tabla */}
-        {loading ? (
-          <p className="text-gray-400 text-sm" style={{ fontFamily: 'sans-serif' }}>{t.cargando}</p>
-        ) : (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <table className="w-full text-sm" style={{ fontFamily: 'sans-serif' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#C0392B' }}>
-                  {[t.dni, t.nombre, t.email, t.tipo, t.rol, t.estado, ''].map((h, i) => (
-                    <th key={i} className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{h}</th>
-                  ))}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <table className="w-full text-sm" style={{ fontFamily: 'sans-serif' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#C0392B' }}>
+                {[t.dni, t.nombre, t.email, t.tipo, t.rol, t.estado, ''].map((h, i) => (
+                  <th key={i} className="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-widest">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {loading ? (
+                [...Array(5)].map((_, i) => <SkeletonFila key={i} />)
+              ) : usuariosPagina.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-sm">
+                    {busqueda ? 'Cap usuari coincideix amb la cerca' : 'No hi ha usuaris'}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {usuariosFiltrados.map((u, i) => (
+              ) : (
+                usuariosPagina.map((u, i) => (
                   <tr key={u.id} className="hover:bg-gray-50 transition" style={{ backgroundColor: i % 2 === 0 ? 'white' : '#fafafa' }}>
                     <td className="px-6 py-4 font-mono text-gray-700 text-xs">{u.dni}</td>
                     <td className="px-6 py-4 font-medium text-gray-800">{u.nombre} {u.apellidos}</td>
@@ -277,11 +319,46 @@ export default function UsuariosPage() {
                       )}
                     </td>
                   </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+
+          {!loading && totalPagines > 1 && (
+            <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between"
+              style={{ fontFamily: 'sans-serif' }}>
+              <p className="text-xs text-gray-400">
+                {paginaActual * usuariosPorPagina + 1}–{Math.min((paginaActual + 1) * usuariosPorPagina, usuariosFiltrados.length)} de {usuariosFiltrados.length}
+              </p>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setPaginaActual(p => Math.max(0, p - 1))}
+                  disabled={paginaActual === 0}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-30 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-600">
+                  ←
+                </button>
+                {[...Array(totalPagines)].map((_, i) => (
+                  <button key={i}
+                    onClick={() => setPaginaActual(i)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition"
+                    style={{
+                      backgroundColor: paginaActual === i ? '#C0392B' : '#f3f4f6',
+                      color: paginaActual === i ? 'white' : '#4b5563'
+                    }}>
+                    {i + 1}
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                <button
+                  onClick={() => setPaginaActual(p => Math.min(totalPagines - 1, p + 1))}
+                  disabled={paginaActual === totalPagines - 1}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition disabled:opacity-30 disabled:cursor-not-allowed bg-gray-100 hover:bg-gray-200 text-gray-600">
+                  →
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   )

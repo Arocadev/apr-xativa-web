@@ -5,18 +5,34 @@ import api from '../services/api'
 import useAutoLogout from '../utils/useAutoLogout'
 import Navbar from '../components/Navbar'
 
+const SkeletonStat = () => (
+  <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center animate-pulse">
+    <div className="h-3 bg-gray-200 rounded w-24 mb-3" />
+    <div className="h-8 bg-gray-200 rounded w-12" />
+  </div>
+)
+
+const SkeletonCard = () => (
+  <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 flex flex-col items-center animate-pulse">
+    <div className="w-12 h-12 rounded-xl bg-gray-200 mb-4" />
+    <div className="h-4 bg-gray-200 rounded w-24 mb-2" />
+    <div className="h-3 bg-gray-200 rounded w-32 mb-4" />
+    <div className="h-3 bg-gray-200 rounded w-16 mt-auto" />
+  </div>
+)
+
 export default function DashboardPage() {
   const { t } = useIdioma()
   const navigate = useNavigate()
   useAutoLogout(30)
-  const [stats, setStats] = useState({
-    solicitudesPendientes: 0,
-    totalUsuarios: 0,
-    totalVehiculos: 0,
-  })
+  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [errorGlobal, setErrorGlobal] = useState('')
 
   useEffect(() => {
     const cargarStats = async () => {
+      setLoading(true)
+      setErrorGlobal('')
       try {
         const [solicitudes, usuarios, vehiculos] = await Promise.all([
           api.get('/solicitudes/pendientes'),
@@ -29,7 +45,9 @@ export default function DashboardPage() {
           totalVehiculos: vehiculos.data.length,
         })
       } catch (err) {
-        console.error(err)
+        setErrorGlobal(err.response?.data?.mensaje || 'Error al carregar les estadístiques')
+      } finally {
+        setLoading(false)
       }
     }
     cargarStats()
@@ -41,7 +59,7 @@ export default function DashboardPage() {
       ruta: '/admin/solicitudes',
       titulo: t.solicitudes,
       descripcion: t.gestionarSolicitudes,
-      badge: stats.solicitudesPendientes > 0 ? stats.solicitudesPendientes : null,
+      badge: stats?.solicitudesPendientes > 0 ? stats.solicitudesPendientes : null,
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -115,73 +133,91 @@ export default function DashboardPage() {
 
       <div className="max-w-5xl mx-auto px-8 py-10">
 
-        {/* Cabecera */}
         <div className="flex items-center gap-3 mb-10">
           <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
           <h2 className="text-2xl font-bold text-gray-800">{t.resumenGeneral}</h2>
         </div>
 
-        {/* Stats */}
+        {errorGlobal && (
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-2"
+            style={{ fontFamily: 'sans-serif', color: '#C0392B' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {errorGlobal}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
-              {t.solicitudesPendientes}
-            </p>
-            <p className="text-3xl font-semibold" style={{ color: '#C0392B', fontFamily: 'sans-serif' }}>
-              {stats.solicitudesPendientes}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
-              {t.totalUsuarios}
-            </p>
-            <p className="text-3xl font-semibold text-blue-600" style={{ fontFamily: 'sans-serif' }}>
-              {stats.totalUsuarios}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
-              {t.vehiculosAutorizados}
-            </p>
-            <p className="text-3xl font-semibold text-green-600" style={{ fontFamily: 'sans-serif' }}>
-              {stats.totalVehiculos}
-            </p>
-          </div>
+          {loading ? (
+            [...Array(3)].map((_, i) => <SkeletonStat key={i} />)
+          ) : (
+            <>
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
+                  {t.solicitudesPendientes}
+                </p>
+                <p className="text-3xl font-semibold" style={{ color: '#C0392B', fontFamily: 'sans-serif' }}>
+                  {stats?.solicitudesPendientes ?? 0}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
+                  {t.totalUsuarios}
+                </p>
+                <p className="text-3xl font-semibold text-blue-600" style={{ fontFamily: 'sans-serif' }}>
+                  {stats?.totalUsuarios ?? 0}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex flex-col items-center text-center">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-2" style={{ fontFamily: 'sans-serif' }}>
+                  {t.vehiculosAutorizados}
+                </p>
+                <p className="text-3xl font-semibold text-green-600" style={{ fontFamily: 'sans-serif' }}>
+                  {stats?.totalVehiculos ?? 0}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Secciones */}
         <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-10 rounded" style={{ backgroundColor: '#C0392B' }} />
           <h2 className="text-2xl font-bold text-gray-800">{t.accesRapido}</h2>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {secciones.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => navigate(s.ruta)}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center transition group relative flex flex-col items-center"
-              style={{ fontFamily: 'sans-serif' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = s.bgHover}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'white'}
-            >
-              {s.badge && (
-                <span className="absolute top-4 right-4 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                  style={{ backgroundColor: '#C0392B' }}>
-                  {s.badge}
-                </span>
-              )}
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-white"
-                style={{ backgroundColor: s.color }}>
-                {s.icon}
-              </div>
-              <h3 className="font-bold text-gray-800 mb-1">{s.titulo}</h3>
-              <p className="text-sm text-gray-400 leading-relaxed mb-4">{s.descripcion}</p>
-              <div className="mt-auto text-xs font-semibold uppercase tracking-widest"
-                style={{ color: s.color }}>
-                {t.acceder}
-              </div>
-            </button>
-          ))}
+          {loading ? (
+            [...Array(5)].map((_, i) => <SkeletonCard key={i} />)
+          ) : (
+            secciones.map((s) => (
+              <button
+                key={s.key}
+                onClick={() => navigate(s.ruta)}
+                className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center transition group relative flex flex-col items-center"
+                style={{ fontFamily: 'sans-serif' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = s.bgHover}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'white'}
+              >
+                {s.badge && (
+                  <span className="absolute top-4 right-4 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                    style={{ backgroundColor: '#C0392B' }}>
+                    {s.badge}
+                  </span>
+                )}
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-white"
+                  style={{ backgroundColor: s.color }}>
+                  {s.icon}
+                </div>
+                <h3 className="font-bold text-gray-800 mb-1">{s.titulo}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-4">{s.descripcion}</p>
+                <div className="mt-auto text-xs font-semibold uppercase tracking-widest"
+                  style={{ color: s.color }}>
+                  {t.acceder}
+                </div>
+              </button>
+            ))
+          )}
         </div>
 
       </div>
