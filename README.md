@@ -1,77 +1,128 @@
+<div align="center">
+
 # APR Xàtiva — Web
 
-> Landing page pública + panel de administración municipal | Public landing page + municipal admin panel
+**Landing page pública + panel de administración municipal**  
+*Public landing page + municipal admin panel*
+
+[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-6-purple?logo=vite)](https://vitejs.dev)
+[![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4-cyan?logo=tailwindcss)](https://tailwindcss.com)
+[![Axios](https://img.shields.io/badge/Axios-JWT-green)](https://axios-http.com)
+
+</div>
 
 ---
 
-## 🇪🇸 Español
+## ¿Qué es APR Xàtiva?
 
-Frontend web del sistema APR Xàtiva, que incluye la **landing page pública** informativa y el **panel de administración** para el personal municipal. Desarrollado como parte del TFG del CFGS DAM en el IES Dr. Lluís Simarro, con nota de **9/10**.
+Sistema de gestión de Áreas de Prioridad Residencial para el Ayuntamiento de Xàtiva. Este repositorio contiene el frontend web: una landing page pública informativa y un panel de administración completo para el personal municipal.
 
-> El proyecto fue cedido al Ayuntamiento de Xàtiva como base para una posible implantación real.
+> Proyecto TFG del CFGS DAM en el IES Dr. Lluís Simarro — nota **10/10**. Cedido al Ayuntamiento de Xàtiva como base para una posible implantación real.
 
 ---
 
-### ✨ Funcionalidades
+## ✨ Funcionalidades principales
 
-#### Landing page pública
+### 🌐 Landing page pública
 - 🗺️ **Mapa interactivo** — zonas APR del nucli antic marcadas en colores con Leaflet/OpenStreetMap
 - ❓ **FAQ** — acordeón interactivo con las preguntas más frecuentes
 - 📱 **Descarga de la app** — botones para Android e iOS
 - 🌍 **Multiidioma** — Valencià / Castellano / English con cambio dinámico sin recarga
 
-#### Panel de administración
-- 📊 **Dashboard** — estadísticas en tiempo real: solicitudes pendientes, usuarios y vehículos
-- 📋 **Solicitudes** — gestión de pendientes + historial con filtro por fechas
-- 👥 **Usuarios** — búsqueda en tiempo real, activar/desactivar, creación directa
+### 🖥️ Panel de administración
+- 📊 **Dashboard** — estadísticas en tiempo real con skeleton loading
+- 📋 **Solicitudes** — gestión de pendientes + historial con filtro por fechas y paginación
+- 👥 **Usuarios** — búsqueda en tiempo real, activar/desactivar, creación directa, paginación
 - 🚗 **Vehículos** — consulta por usuario con historial activo/inactivo
 - 🎫 **Derechos de acceso** — visualización de permanentes y puntuales por usuario
 - 📷 **Simulador de cámaras** — terminal estilo consola con logs en tiempo real y estadísticas
-- 👤 **Perfil** — datos del administrador y cambio de contraseña
+- 🔍 **Auditoría** — log paginado de todas las acciones con filtro por evento y DNI
+- 👤 **Perfil** — datos del administrador
+
+### 🔐 Seguridad
+- JWT automático en todas las peticiones via interceptor Axios
+- **Refresh token** — renovación automática del JWT sin re-login, con cola de peticiones paralelas
+- Logout con revocación del refresh token en el servidor
+- Redirección automática al login en sesión expirada
+
+### 🎨 UX / UI
+- Skeleton loading en dashboard, usuarios y solicitudes
+- Paginación en todas las tablas con muchos registros
+- Mensajes de error claros en cada acción
+- Diseño consistente con tipografía Georgia + Tailwind CSS
 
 ---
 
-### 🛠️ Stack tecnológico
+## 🛠️ Stack tecnológico
 
 | Capa | Tecnología |
 |------|-----------|
 | Framework | React 19 + Vite |
 | Estilos | Tailwind CSS |
-| HTTP | Axios + interceptores JWT automáticos |
-| Mapa | Leaflet + OpenStreetMap |
+| HTTP | Axios + interceptores JWT + refresh automático |
+| Mapa | Leaflet + react-leaflet + OpenStreetMap |
 | Estado global | React Context API |
+| Routing | React Router v6 |
 
 ---
 
-### 📁 Estructura del proyecto
+## 📁 Estructura del proyecto
 
 ```
 src/
-├── components/     # Componentes reutilizables
-├── pages/
-│   ├── landing/   # Landing page pública
-│   └── admin/     # Panel de administración
+├── components/
+│   ├── Navbar.jsx
+│   └── RutaProtegida.jsx
 ├── context/
-│   ├── AuthContext.jsx    # Autenticación + token JWT
-│   └── IdiomaContext.jsx  # Internacionalización
-└── services/      # Llamadas a la API REST
+│   ├── AuthContext.jsx
+│   ├── IdiomaContext.jsx
+│   └── TemaContext.jsx
+├── pages/
+│   ├── LandingPage.jsx
+│   ├── LoginPage.jsx
+│   ├── DashboardPage.jsx
+│   ├── SolicitudesPage.jsx
+│   ├── UsuariosPage.jsx
+│   ├── VehiculosPage.jsx
+│   ├── DerechosPage.jsx
+│   ├── AuditoriaPage.jsx
+│   ├── SimuladorPage.jsx
+│   └── PerfilPage.jsx
+└── services/
+    └── api.js
 ```
 
 ---
 
-### 🚀 Instalación
+## 🚀 Instalación
 
 ```bash
 git clone https://github.com/ArocaDev/apr-xativa-web.git
 cd apr-xativa-web
-
 npm install
 npm run dev
 ```
 
+El backend debe estar corriendo en `http://localhost:8080`. Para cambiar la URL:
+
+```bash
+# .env
+VITE_API_URL=http://localhost:8080/api
+```
+
 ---
 
-### 🔗 Repositorios del proyecto
+## 🗺️ Roadmap
+
+- [ ] Despliegue en Vercel con dominio apr.aroca.dev
+- [ ] Dashboard con gráficas de accesos
+- [ ] Tiempo real con WebSockets
+- [ ] Capturas de pantalla y demo en vídeo
+
+---
+
+## 🔗 Repositorios del proyecto
 
 | Componente | Repositorio |
 |---|---|
@@ -81,64 +132,13 @@ npm run dev
 
 ---
 
-## 🌐 English
+## 👤 Autor
 
-Web frontend of the APR Xàtiva system, including the **public landing page** and the **municipal admin panel**. Developed as part of a final degree project (TFG) for the DAM Higher Vocational Course at IES Dr. Lluís Simarro, graded **9/10**.
-
-> The project was handed over to Xàtiva City Council as a base for potential real-world implementation.
-
----
-
-### ✨ Features
-
-#### Public landing page
-- 🗺️ **Interactive map** — APR zones of the historic centre highlighted in colours with Leaflet/OpenStreetMap
-- ❓ **FAQ** — interactive accordion with the most common questions
-- 📱 **App download** — buttons for Android and iOS
-- 🌍 **Multilingual** — Valencian / Spanish / English with dynamic switching without page reload
-
-#### Admin panel
-- 📊 **Dashboard** — real-time stats: pending requests, users and vehicles
-- 📋 **Requests** — manage pending requests + full history with date filter
-- 👥 **Users** — real-time search, activate/deactivate, direct account creation
-- 🚗 **Vehicles** — query by user with active/inactive history
-- 🎫 **Access rights** — view permanent and one-time rights per user
-- 📷 **Camera simulator** — console-style terminal with real-time logs and statistics
-- 👤 **Profile** — admin account data and password change
+**Alejandro Rodríguez Calabuig**  
+[github.com/ArocaDev](https://github.com/ArocaDev) · [LinkedIn](https://linkedin.com/in/alejandro-rodriguez-calabuig-a871a1230)
 
 ---
 
-### 🛠️ Tech Stack
+## 📄 Licencia
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + Vite |
-| Styles | Tailwind CSS |
-| HTTP | Axios + automatic JWT interceptors |
-| Map | Leaflet + OpenStreetMap |
-| Global state | React Context API |
-
----
-
-### 🚀 Installation
-
-```bash
-git clone https://github.com/ArocaDev/apr-xativa-web.md
-cd apr-xativa-web
-
-npm install
-npm run dev
-```
-
----
-
-## 👤 Autor / Author
-
-**Alejandro Rodríguez Calabuig** — [github.com/ArocaDev](https://github.com/ArocaDev) · [LinkedIn](https://linkedin.com/in/alejandro-rodriguez-calabuig-a871a1230)
-
----
-
-## 📄 Licencia / License
-
-Proyecto académico — cedido al Ayuntamiento de Xàtiva para posible uso institucional.  
-Academic project — handed over to Xàtiva City Council for potential institutional use.
+Proyecto académico — cedido al Ayuntamiento de Xàtiva para posible uso institucional.
