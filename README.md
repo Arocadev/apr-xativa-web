@@ -1,14 +1,12 @@
 <div align="center">
 
-# APR Xàtiva — Web
+# APR Xàtiva — Panel Web
 
-**Landing page pública + panel de administración municipal**  
-*Public landing page + municipal admin panel*
+**Panel de administración para el sistema de control de acceso vehicular**
 
 [![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-6-purple?logo=vite)](https://vitejs.dev)
-[![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4-cyan?logo=tailwindcss)](https://tailwindcss.com)
-[![Axios](https://img.shields.io/badge/Axios-JWT-green)](https://axios-http.com)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES2024-yellow?logo=javascript)](https://developer.mozilla.org/es/docs/Web/JavaScript)
 
 </div>
 
@@ -16,81 +14,149 @@
 
 ## ¿Qué es APR Xàtiva?
 
-Sistema de gestión de Áreas de Prioridad Residencial para el Ayuntamiento de Xàtiva. Este repositorio contiene el frontend web: una landing page pública informativa y un panel de administración completo para el personal municipal.
+APR Xàtiva es un sistema de control de acceso vehicular desarrollado como Trabajo de Fin de Grado (DAM) y adoptado por el Ajuntament de Xàtiva como propuesta técnica. Este repositorio contiene el panel web de administración y la landing page informativa pública.
 
-> Proyecto TFG del CFGS DAM en el IES Dr. Lluís Simarro — nota **10/10**. Cedido al Ayuntamiento de Xàtiva como base para una posible implantación real.
-
----
-
-## ✨ Funcionalidades principales
-
-### 🌐 Landing page pública
-- 🗺️ **Mapa interactivo** — zonas APR del nucli antic marcadas en colores con Leaflet/OpenStreetMap
-- ❓ **FAQ** — acordeón interactivo con las preguntas más frecuentes
-- 📱 **Descarga de la app** — botones para Android e iOS
-- 🌍 **Multiidioma** — Valencià / Castellano / English con cambio dinámico sin recarga
-
-### 🖥️ Panel de administración
-- 📊 **Dashboard** — estadísticas en tiempo real con skeleton loading
-- 📋 **Solicitudes** — gestión de pendientes + historial con filtro por fechas y paginación
-- 👥 **Usuarios** — búsqueda en tiempo real, activar/desactivar, creación directa, paginación
-- 🚗 **Vehículos** — consulta por usuario con historial activo/inactivo
-- 🎫 **Derechos de acceso** — visualización de permanentes y puntuales por usuario
-- 📷 **Simulador de cámaras** — terminal estilo consola con logs en tiempo real y estadísticas
-- 🔍 **Auditoría** — log paginado de todas las acciones con filtro por evento y DNI
-- 👤 **Perfil** — datos del administrador
-
-### 🔐 Seguridad
-- JWT automático en todas las peticiones via interceptor Axios
-- **Refresh token** — renovación automática del JWT sin re-login, con cola de peticiones paralelas
-- Logout con revocación del refresh token en el servidor
-- Redirección automática al login en sesión expirada
-
-### 🎨 UX / UI
-- Skeleton loading en dashboard, usuarios y solicitudes
-- Paginación en todas las tablas con muchos registros
-- Mensajes de error claros en cada acción
-- Diseño consistente con tipografía Georgia + Tailwind CSS
+🔧 **Backend:** [github.com/ArocaDev/apr-xativa-backend](https://github.com/ArocaDev/apr-xativa-backend)  
+📱 **App Android:** [github.com/ArocaDev/apr-xativa-android](https://github.com/ArocaDev/apr-xativa-android)
 
 ---
 
-## 🛠️ Stack tecnológico
+## ✨ Funcionalidades
+
+**Landing page pública:**
+- Descripción del sistema APR y zonas del núcleo antiguo
+- Mapa interactivo con Leaflet
+- Guía de uso en 4 pasos
+- Sección de descarga de la app
+- Preguntas frecuentes
+- Multiidioma: Valenciano, Español e Inglés
+
+**Panel de administración:**
+- Autenticación JWT con refresh token automático y cola para 401 paralelos
+- Dashboard con estadísticas generales
+- Gestión de vehículos — CRUD con búsqueda en tiempo real
+- Gestión de usuarios — roles ADMIN y AGENTE, skeleton loading, paginación client-side
+- Solicitudes de acceso — revisión de documentación, aprobación y rechazo
+- Derechos de acceso — permanentes y puntuales
+- Simulador de acceso — probabilidad 60/40 para testing
+- Auditoría — paginación server-side, filtros por DNI y tipo de evento, badges de colores
+- Notificaciones
+
+---
+
+## 📸 Capturas — Landing
+
+<div align="center">
+
+| Hero | ¿Qué es el APR? | Zonas y mapa |
+|:-:|:-:|:-:|
+| ![Hero](assets/web-hero.png) | ![Qué es](assets/web-que-es.png) | ![Mapa](assets/web-mapa.png) |
+
+| ¿Cómo funciona? | Descarga | FAQ |
+|:-:|:-:|:-:|
+| ![Cómo funciona](assets/web-como-funciona.png) | ![Descarga](assets/web-descarga.png) | ![FAQ](assets/web-faq.png) |
+
+</div>
+
+---
+
+## 🎬 Demo — Landing
+
+<img src="assets/web-landing.gif" width="700" />
+
+---
+
+## 📸 Capturas — Panel de administración
+
+<div align="center">
+
+| Dashboard | Solicitudes | Detalle solicitud |
+|:-:|:-:|:-:|
+| ![Dashboard](assets/admin-dashboard.png) | ![Solicitudes](assets/admin-solicitudes.png) | ![Detalle](assets/admin-solicitud-nueva.png) |
+
+| Usuarios | Crear usuario | Vehículos |
+|:-:|:-:|:-:|
+| ![Usuarios](assets/admin-usuarios.png) | ![Crear usuario](assets/admin-crear-usuario.png) | ![Vehículos](assets/admin-vehiculos.png) |
+
+| Derechos de acceso | Simulador | Auditoría |
+|:-:|:-:|:-:|
+| ![Derechos](assets/admin-derechos.png) | ![Simulador](assets/admin-simulador.png) | ![Auditoría](assets/admin-auditoria.png) |
+
+| Notificaciones | Perfil |
+|:-:|:-:|
+| ![Notificaciones](assets/admin-notificaciones.png) | ![Perfil](assets/admin-perfil.png) |
+
+</div>
+
+---
+
+## 🎬 Demo — Panel de administración
+
+**Gestión de usuarios**
+
+<img src="assets/admin-usuarios.gif" width="700" />
+
+**Gestión de vehículos**
+
+<img src="assets/admin-vehiculos.gif" width="700" />
+
+**Derechos de acceso**
+
+<img src="assets/admin-derechos.gif" width="700" />
+
+**Solicitudes de acceso**
+
+<img src="assets/admin-solicitudes.gif" width="700" />
+
+**Simulador de acceso**
+
+<img src="assets/admin-simulador.gif" width="700" />
+
+**Auditoría**
+
+<img src="assets/admin-auditoria.gif" width="700" />
+
+---
+
+## 🛠️ Stack técnico
 
 | Capa | Tecnología |
 |------|-----------|
-| Framework | React 19 + Vite |
-| Estilos | Tailwind CSS |
-| HTTP | Axios + interceptores JWT + refresh automático |
-| Mapa | Leaflet + react-leaflet + OpenStreetMap |
-| Estado global | React Context API |
-| Routing | React Router v6 |
+| Framework | React 19 |
+| Bundler | Vite 6 |
+| Routing | React Router v7 |
+| HTTP | Axios con interceptor de refresh token |
+| Mapas | Leaflet |
+| Estilos | CSS Modules |
+| Auth | JWT almacenado en localStorage |
 
 ---
 
 ## 📁 Estructura del proyecto
 
 ```
-src/
-├── components/
-│   ├── Navbar.jsx
-│   └── RutaProtegida.jsx
-├── context/
-│   ├── AuthContext.jsx
-│   ├── IdiomaContext.jsx
-│   └── TemaContext.jsx
-├── pages/
-│   ├── LandingPage.jsx
-│   ├── LoginPage.jsx
-│   ├── DashboardPage.jsx
-│   ├── SolicitudesPage.jsx
-│   ├── UsuariosPage.jsx
-│   ├── VehiculosPage.jsx
-│   ├── DerechosPage.jsx
-│   ├── AuditoriaPage.jsx
-│   ├── SimuladorPage.jsx
-│   └── PerfilPage.jsx
-└── services/
-    └── api.js
+apr-xativa-frontend/
+├── src/
+│   ├── pages/
+│   │   ├── landing/
+│   │   ├── admin/
+│   │   │   ├── DashboardPage.jsx
+│   │   │   ├── UsuariosPage.jsx
+│   │   │   ├── VehiculosPage.jsx
+│   │   │   ├── SolicitudesPage.jsx
+│   │   │   ├── DerechosPage.jsx
+│   │   │   ├── SimuladorPage.jsx
+│   │   │   └── AuditoriaPage.jsx
+│   │   └── auth/
+│   ├── components/
+│   ├── context/
+│   │   └── AuthContext.jsx
+│   ├── api/
+│   │   └── api.js
+│   └── App.jsx
+├── assets/
+│   └── .gitkeep
+└── vite.config.js
 ```
 
 ---
@@ -98,47 +164,56 @@ src/
 ## 🚀 Instalación
 
 ```bash
-git clone https://github.com/ArocaDev/apr-xativa-web.git
-cd apr-xativa-web
+git clone https://github.com/ArocaDev/apr-xativa-frontend.git
+cd apr-xativa-frontend
 npm install
+cp .env.example .env
+# Edita .env con la URL del backend
 npm run dev
 ```
 
-El backend debe estar corriendo en `http://localhost:8080`. Para cambiar la URL:
+Accede en `http://localhost:5173`
 
-```bash
-# .env
-VITE_API_URL=http://localhost:8080/api
+---
+
+## 🔑 Variables de entorno
+
+```env
+VITE_API_URL=http://localhost:8080
 ```
 
 ---
 
 ## 🗺️ Roadmap
 
-- [ ] Despliegue en Vercel con dominio apr.aroca.dev
-- [ ] Dashboard con gráficas de accesos
-- [ ] Tiempo real con WebSockets
-- [ ] Capturas de pantalla y demo en vídeo
+- [x] Autenticación JWT con refresh token automático
+- [x] Cola para gestionar 401 paralelos
+- [x] Dashboard con estadísticas
+- [x] Gestión de vehículos con búsqueda en tiempo real
+- [x] Gestión de usuarios con skeleton loading y paginación
+- [x] Solicitudes de acceso con revisión de documentación
+- [x] Derechos de acceso permanentes y puntuales
+- [x] Simulador de acceso 60/40
+- [x] Auditoría con paginación server-side y filtros
+- [x] Notificaciones
+- [x] Landing page multiidioma con mapa Leaflet
+- [ ] Migración a TypeScript
 
 ---
 
-## 🔗 Repositorios del proyecto
+## 🏆 Reconocimiento
 
-| Componente | Repositorio |
-|---|---|
-| Backend API REST | [apr-xativa-backend](https://github.com/ArocaDev/apr-xativa-backend) |
-| Panel web + Landing (este repo) | [apr-xativa-web](https://github.com/ArocaDev/apr-xativa-web) |
-| App móvil Android | [apr-xativa-android](https://github.com/ArocaDev/apr-xativa-android) |
+Proyecto calificado con **10/10** y adoptado por el **Ajuntament de Xàtiva** como propuesta técnica oficial.
 
 ---
 
 ## 👤 Autor
 
 **Alejandro Rodríguez Calabuig**  
-[github.com/ArocaDev](https://github.com/ArocaDev) · [LinkedIn](https://linkedin.com/in/alejandro-rodriguez-calabuig-a871a1230)
+[github.com/ArocaDev](https://github.com/ArocaDev) · [LinkedIn](https://www.linkedin.com/in/alejandro-rodriguez-calabuig-a871a1230)
 
 ---
 
 ## 📄 Licencia
 
-Proyecto académico — cedido al Ayuntamiento de Xàtiva para posible uso institucional.
+Proyecto académico — no licenciado para uso comercial.
